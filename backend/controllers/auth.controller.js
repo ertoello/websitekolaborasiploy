@@ -156,8 +156,8 @@ export const signup = async (req, res) => {
     res.cookie("jwt-linkedin", token, {
       httpOnly: true,
       maxAge: 3 * 24 * 60 * 60 * 1000,
-      sameSite: "strict",
-      secure: process.env.NODE_ENV === "production",
+      secure: true, // harus true di production (HTTPS)
+      sameSite: "None", // agar bisa cross-origin
     });
 
     res.status(201).json({
@@ -287,8 +287,8 @@ export const login = async (req, res) => {
     res.cookie("jwt-linkedin", token, {
       httpOnly: true,
       maxAge: 3 * 24 * 60 * 60 * 1000, // 3 hari
-      sameSite: "strict",
-      secure: process.env.NODE_ENV === "production",
+      secure: true, // harus true di production (HTTPS)
+      sameSite: "None", // agar bisa cross-origin
     });
 
     // Perbarui waktu login terakhir
@@ -322,8 +322,8 @@ export const logout = (req, res) => {
     Object.keys(req.cookies).forEach((cookie) => {
       res.clearCookie(cookie, {
         httpOnly: true,
-        sameSite: "strict",
-        secure: process.env.NODE_ENV === "production",
+        secure: true, // harus true di production (HTTPS)
+        sameSite: "None", // agar bisa cross-origin
       });
     });
 
