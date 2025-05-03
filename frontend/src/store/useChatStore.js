@@ -17,16 +17,16 @@ export const useChatStore = create((set, get) => ({
 
     if (get().socket) return; // Hindari membuat socket baru jika sudah ada
 
+    // const socket = io("http://localhost:5000", {
+    //   query: { userId: authUser._id }, // Kirim ID user ke server saat koneksi dibuat
+    // });
+
     const socket = io(
-      "https://poetic-stillness-production-59fc.up.railway.app",
+      "https://websitekolaborasiploy-production.up.railway.app/",
       {
-        query: { userId: authUser._id }, // Kirim ID user ke server saat koneksi dibuat
+        query: { userId: authUser._id },
       }
     );
-
-    // const socket = io("https://website-kolaborasi-production.up.railway.app", {
-    //   query: { userId: authUser._id },
-    // });
 
     set({ socket });
 
