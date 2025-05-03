@@ -1,9 +1,8 @@
+// hanya untuk React (frontend)
 import { createContext, useContext, useEffect, useState } from "react";
 import { io } from "socket.io-client";
 
-const BASE_URL = "https://websitekolaborasiploy-production.up.railway.app/"; // Ganti sesuai backend
-// const BASE_URL = "https://w3lc3pgc-5000.asse.devtunnels.ms";
-
+const BASE_URL = "https://websitekolaborasiploy-production.up.railway.app";
 
 const SocketContext = createContext(null);
 
@@ -13,7 +12,6 @@ export const SocketProvider = ({ children, userId }) => {
   useEffect(() => {
     if (!userId) return;
 
-    console.log("🔗 Connecting socket with userId:", userId);
     const newSocket = io(BASE_URL, {
       transports: ["websocket"],
       query: { userId },
