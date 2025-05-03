@@ -19,7 +19,9 @@ dotenv.config();
 const PORT = process.env.PORT || 5000;
 const __dirname = path.resolve();
 
+
 if (process.env.NODE_ENV !== "production") {
+  const cors = require("cors");
   app.use(
     cors({
       origin: [
@@ -27,7 +29,7 @@ if (process.env.NODE_ENV !== "production") {
         // "https://website-kolaborasi.vercel.app",
         // "https://w3lc3pgc-5173.asse.devtunnels.ms",
       ],
-      credentials: true,
+      credentials: include,
     })
   );
 }
