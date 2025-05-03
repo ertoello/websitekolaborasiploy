@@ -12,7 +12,7 @@ const io = new Server(server, {
       // "https://website-kolaborasi.vercel.app",
       "https://w3lc3pgc-5173.asse.devtunnels.ms", // tambahkan ini
     ],
-    credentials: include,
+    credentials: true,
   },
 });
 

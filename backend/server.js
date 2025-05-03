@@ -24,12 +24,15 @@ if (process.env.NODE_ENV !== "production") {
   const cors = require("cors");
   app.use(
     cors({
-      origin: [
-        "https://websitekolaborasiploy.vercel.app/",
-        // "https://website-kolaborasi.vercel.app",
-        // "https://w3lc3pgc-5173.asse.devtunnels.ms",
-      ],
-      credentials: include,
+      origin: "https://websitekolaborasiploy.vercel.app", // Ganti sesuai domain frontend
+      credentials: true,
+    })
+  );
+} else {
+  app.use(
+    cors({
+      origin: "https://websitekolaborasiploy.vercel.app", // Ganti sesuai domain frontend
+      credentials: true,
     })
   );
 }
