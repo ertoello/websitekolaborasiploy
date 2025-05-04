@@ -23,7 +23,7 @@ app.use(
   cors({
     origin: [
       "https://websitekolaborasiploy.vercel.app/",
-      "http://localhost:5173/",
+      // "http://localhost:5173/",
       // "https://w3lc3pgc-5173.asse.devtunnels.ms",
     ],
     credentials: true,

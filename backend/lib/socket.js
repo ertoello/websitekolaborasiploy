@@ -10,7 +10,7 @@ const io = new Server(server, {
     origin: [
       "https://websitekolaborasiploy-production.up.railway.app",
       // "https://website-kolaborasi.vercel.app",
-      "http://localhost:5173", // tambahkan ini
+      // "http://localhost:5173", // tambahkan ini
     ],
     credentials: true,
   },
