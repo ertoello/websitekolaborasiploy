@@ -1,5 +1,3 @@
-import isPropValid from "@emotion/is-prop-valid";
-
 var _p = (e) => {
   throw TypeError(e);
 };
@@ -17781,9 +17779,12 @@ let Rw = (e) => !Nc(e);
 function f6(e) {
   e && (Rw = (t) => (t.startsWith("on") ? !Nc(t) : e(t)));
 }
-try {
-  f6(isPropValid);
-} catch {}
+import("@emotion/is-prop-valid").then((mod) => {
+  try {
+    f6(mod.default);
+  } catch {}
+});
+
 function h6(e, t, n) {
   const r = {};
   for (const s in e)
