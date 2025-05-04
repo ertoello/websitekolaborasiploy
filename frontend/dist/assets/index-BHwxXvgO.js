@@ -17779,9 +17779,11 @@ let Rw = (e) => !Nc(e);
 function f6(e) {
   e && (Rw = (t) => (t.startsWith("on") ? !Nc(t) : e(t)));
 }
-try {
-  f6(require("@emotion/is-prop-valid").default);
-} catch {}
+import("@emotion/is-prop-valid").then((mod) => {
+  try {
+    f6(mod.default);
+  } catch {}
+});
 function h6(e, t, n) {
   const r = {};
   for (const s in e)
