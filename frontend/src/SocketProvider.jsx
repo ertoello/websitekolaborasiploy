@@ -1,9 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { io } from "socket.io-client";
 
-const BASE_URL = "https://websitekolaborasiploy-production.up.railway.app"; // Ganti sesuai backend
-// const BASE_URL = "https://w3lc3pgc-5000.asse.devtunnels.ms";
-
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const SocketContext = createContext(null);
 
