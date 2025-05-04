@@ -3,8 +3,8 @@ import { useState, useEffect } from "react";
 import { axiosInstance } from "../lib/axios";
 import toast from "react-hot-toast";
 import { Image, Loader } from "lucide-react";
-import { useQuill } from "react-quilljs";
-import "quill/dist/quill.snow.css";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 import DOMPurify from "dompurify";
 import "../index.css";
 
@@ -44,13 +44,6 @@ const PostCreation = ({ user }) => {
     "code-block",
     "link",
   ];
-
-  const { quill, quillRef } = useQuill({
-    theme: "snow",
-    placeholder: "Bagikan sesuatu yang menarik dan inspiratif...",
-    modules,
-    formats,
-  });
 
   const { mutate: createPostMutation, isPending } = useMutation({
     mutationFn: async (postData) => {
@@ -148,10 +141,16 @@ const PostCreation = ({ user }) => {
             Kirim Postingan
           </label>
           <div className="rounded-xl overflow-hidden shadow-sm border border-gray-300 bg-white">
-            <div
-              ref={quillRef}
-              className="custom-editor"
-              style={{ minHeight: "55px" }}
+            <ReactQuill
+              theme="snow"
+              value={editorText}
+              onChange={(content, delta, source, editor) => {
+                setEditorText(content);
+                setPlainText(editor.getText().trim());
+              }}
+              modules={modules}
+              formats={formats}
+              placeholder="Bagikan sesuatu yang menarik dan inspiratif..."
             />
           </div>
         </article>

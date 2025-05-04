@@ -2,9 +2,8 @@ import { useRef, useState, useEffect } from "react";
 import { useChatStore } from "../store/useChatStore";
 import { Image, Send, X } from "lucide-react";
 import toast from "react-hot-toast";
-import Quill from 'quill';
-import { useQuill } from "react-quilljs";
-import "quill/dist/quill.snow.css";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 import DOMPurify from "dompurify";
 import "../index.css";
 
@@ -12,43 +11,39 @@ const MessageInput = () => {
   const [editorText, setEditorText] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
   const fileInputRef = useRef(null);
+  const quillRef = useRef(null); // Refs to access the editor instance
   const { sendMessage } = useChatStore();
-  const { quill, quillRef } = useQuill({
-    modules: {
-      toolbar: {
-        container: [
-          [{ header: [1, 2, 3, 4, 5, 6, false] }],
-          [{ font: [] }, { size: [] }],
-          ["bold", "italic", "underline", "strike"],
-          [{ color: [] }, { background: [] }],
-          [{ script: "sub" }, { script: "super" }],
-          [{ list: "ordered" }, { list: "bullet" }],
-          ["blockquote", "code-block"],
-          ["link"],
-          ["clean"],
-        ],
-      },
-      clipboard: { matchVisual: false },
-    },
-    formats: [
-      "header",
-      "font",
-      "size",
-      "bold",
-      "italic",
-      "underline",
-      "strike",
-      "color",
-      "background",
-      "script",
-      "list",
-      "blockquote",
-      "code-block",
-      "link",
+
+  const modules = {
+    toolbar: [
+      [{ header: [1, 2, 3, false] }],
+      [{ font: [] }, { size: [] }],
+      ["bold", "italic", "underline", "strike"],
+      [{ color: [] }, { background: [] }],
+      [{ script: "sub" }, { script: "super" }],
+      [{ list: "ordered" }, { list: "bullet" }],
+      ["blockquote", "code-block"],
+      ["link"],
+      ["clean"],
     ],
-    theme: "snow",
-    placeholder: "Type a message...",
-  });
+  };
+
+  const formats = [
+    "header",
+    "font",
+    "size",
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "color",
+    "background",
+    "script",
+    "list",
+    "blockquote",
+    "code-block",
+    "link",
+  ];
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -71,9 +66,11 @@ const MessageInput = () => {
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
-    if (!quill) return;
 
-    const htmlContent = quill.root.innerHTML;
+    const quillInstance = quillRef.current?.getEditor();
+    if (!quillInstance) return;
+
+    const htmlContent = quillInstance.root.innerHTML;
     const sanitizedText = DOMPurify.sanitize(htmlContent);
     const plainText = sanitizedText.replace(/<(.|\n)*?>/g, "").trim();
 
@@ -86,7 +83,8 @@ const MessageInput = () => {
       });
 
       // Clear editor
-      quill.setText(""); // Clear content
+      quillInstance.setText("");
+      setEditorText("");
       setImagePreview(null);
       if (fileInputRef.current) fileInputRef.current.value = "";
     } catch (error) {
@@ -133,32 +131,35 @@ const MessageInput = () => {
       }
     });
 
-    if (!quill) return;
+    const quillInstance = quillRef.current?.getEditor();
+    if (!quillInstance) return;
 
     const updateText = () => {
-      const text = quill.getText().trim();
+      const text = quillInstance.getText().trim();
       setEditorText(text);
     };
 
-    quill.on("text-change", updateText);
+    quillInstance.on("text-change", updateText);
 
     return () => {
-      quill.off("text-change", updateText);
+      quillInstance.off("text-change", updateText);
     };
-  }, [quill]);
-
+  }, []);
 
   return (
     <div className="w-full flex justify-center p-2 shadow-lg">
       <form
         onSubmit={handleSendMessage}
-        className="flex flex-col gap-3 w-[full] max-w-[80vw] md:max-w-[65vw]"
+        className="flex flex-col gap-3 w-full max-w-[80vw] md:max-w-[65vw]"
       >
-        {/* EDITOR */}
-        <div
+        <ReactQuill
           ref={quillRef}
+          value={editorText}
+          onChange={setEditorText}
+          modules={modules}
+          formats={formats}
+          placeholder="Tulis pesan..."
           className="bg-white rounded-md custom-editor"
-          // style={{ minHeight: "50px" }}
         />
 
         {/* IMAGE PREVIEW */}
