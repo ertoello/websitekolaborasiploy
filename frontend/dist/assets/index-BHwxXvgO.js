@@ -22979,25 +22979,28 @@ const vb = (e = { theme: My, modules: Dy, formats: Ly }) => {
       editorRef: t,
       editor: void 0,
     });
-  return (
-    useEffect(() => {
-  if (s.Quill || (i((o) => to(o, { Quill: import("quill") })), s.Quill && !s.quill && t && t.current && n)) {
-    import("quill").then((module) => {
-      const Quill = module.default;
+  return 
+  b.useEffect(() => {
+    if (
+      s.Quill ||
+      (i((o) => to(o, { Quill: import("quill") })),
+      s.Quill && !s.quill && t && t.current && n)
+    ) {
+      import("quill").then((module) => {
+        const Quill = module.default;
 
-      const o = to(e, {
-        modules: to(Dy, e.modules),
-        formats: e.formats || Ly,
-        theme: e.theme || My,
+        const o = to(e, {
+          modules: to(Dy, e.modules),
+          formats: e.formats || Ly,
+          theme: e.theme || My,
+        });
+
+        const l = new s.Quill(t.current, o);
+        i(to(to({}, s), { quill: l, editor: l }));
       });
-
-      const l = new s.Quill(t.current, o);
-      i(to(to({}, s), { quill: l, editor: l }));
-    });
-  }
-  r(true);
-}, [n, s, e])
-  );
+    }
+    r(true);
+  }, [n, s, e]);
 };
 /*! @license DOMPurify 3.2.5 | (c) Cure53 and other contributors | Released under the Apache license 2.0 and Mozilla Public License 2.0 | github.com/cure53/DOMPurify/blob/3.2.5/LICENSE */ const {
   entries: wb,
