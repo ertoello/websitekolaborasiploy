@@ -5,15 +5,18 @@ import express from "express";
 const app = express();
 const server = http.createServer(app);
 
+const allowedOrigins =
+  process.env.NODE_ENV === "production"
+    ? ["https://websitekolaborasiploy.vercel.app"]
+    : ["http://localhost:5173"];
+
 const io = new Server(server, {
   cors: {
-    origin: [
-      // "https://websitekolaborasiploy-production.up.railway.app",
-      "https://websitekolaborasiploy.vercel.app",
-    ],
+    origin: allowedOrigins,
     credentials: true,
   },
 });
+
 
 const userSocketMap = {}; // { userId: socketId }
 
