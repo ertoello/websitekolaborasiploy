@@ -8,9 +8,8 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin: [
-      "https://websitekolaborasiploy-production.up.railway.app",
-      // "https://website-kolaborasi.vercel.app",
-      "https://w3lc3pgc-5173.asse.devtunnels.ms", // tambahkan ini
+      // "https://websitekolaborasiploy-production.up.railway.app",
+      "https://websitekolaborasiploy.vercel.app",
     ],
     credentials: true,
   },
