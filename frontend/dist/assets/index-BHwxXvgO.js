@@ -1,3 +1,5 @@
+import isPropValid from "@emotion/is-prop-valid";
+
 var _p = (e) => {
   throw TypeError(e);
 };
@@ -17780,7 +17782,7 @@ function f6(e) {
   e && (Rw = (t) => (t.startsWith("on") ? !Nc(t) : e(t)));
 }
 try {
-  f6(require("@emotion/is-prop-valid").default);
+  f6(isPropValid);
 } catch {}
 function h6(e, t, n) {
   const r = {};
@@ -22977,22 +22979,23 @@ const vb = (e = { theme: My, modules: Dy, formats: Ly }) => {
       editor: void 0,
     });
   return (
-    b.useEffect(() => {
-      if (
-        (s.Quill || i((o) => to(o, { Quill: require("quill").default })),
-        s.Quill && !s.quill && t && t.current && n)
-      ) {
-        const o = to(e, {
-            modules: to(Dy, e.modules),
-            formats: e.formats || Ly,
-            theme: e.theme || My,
-          }),
-          l = new s.Quill(t.current, o);
-        i(to(to({}, s), { quill: l, editor: l }));
-      }
-      r(!0);
-    }, [n, s, e]),
-    s
+    useEffect(() => {
+  if (s.Quill || (i((o) => to(o, { Quill: import("quill") })), s.Quill && !s.quill && t && t.current && n)) {
+    import("quill").then((module) => {
+      const Quill = module.default;
+
+      const o = to(e, {
+        modules: to(Dy, e.modules),
+        formats: e.formats || Ly,
+        theme: e.theme || My,
+      });
+
+      const l = new s.Quill(t.current, o);
+      i(to(to({}, s), { quill: l, editor: l }));
+    });
+  }
+  r(true);
+}, [n, s, e])
   );
 };
 /*! @license DOMPurify 3.2.5 | (c) Cure53 and other contributors | Released under the Apache license 2.0 and Mozilla Public License 2.0 | github.com/cure53/DOMPurify/blob/3.2.5/LICENSE */ const {
