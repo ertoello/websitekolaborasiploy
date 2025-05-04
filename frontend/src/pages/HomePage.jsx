@@ -74,15 +74,19 @@ const HomePage = () => {
     },
   });
 
-  const { data: posts } = useQuery({
+  const { data: posts = [] } = useQuery({
     queryKey: ["posts", category],
     queryFn: async () => {
       const endpoint =
         category === "all" ? "/posts" : `/posts?category=${category}`;
       const res = await axiosInstance.get(endpoint);
-      return res.data;
+      return res.data || []; // jaga-jaga return array kosong kalau API gak return apa-apa
+    },
+    onError: (error) => {
+      console.error("Gagal ambil posts:", error);
     },
   });
+
 
   const recommendedUsers = recommendedData?.users || [];
   const totalPages = recommendedData?.totalPages || 1; // Ambil total halaman dari API
