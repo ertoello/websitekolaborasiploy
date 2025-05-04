@@ -5,13 +5,15 @@ import express from "express";
 const app = express();
 const server = http.createServer(app);
 
+// Tentukan origin berdasarkan environment
+const allowedOrigins =
+  process.env.NODE_ENV === "production"
+    ? ["https://websitekolaborasiploy-production.up.railway.app"]
+    : ["http://localhost:5173", "http://localhost:3000"]; // atau port dev yang kamu pakai
+
 const io = new Server(server, {
   cors: {
-    origin: [
-      "https://websitekolaborasiploy-production.up.railway.app",
-      // "https://website-kolaborasi.vercel.app",
-      // "http://localhost:5173", // tambahkan ini
-    ],
+    origin: allowedOrigins,
     credentials: true,
   },
 });
