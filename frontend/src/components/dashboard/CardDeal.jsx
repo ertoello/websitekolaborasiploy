@@ -10,7 +10,7 @@ const ChatFeature = () => {
       className={`rounded-2xl ${styles.flexCenter} flex-col md:flex-row`}
     >
       <div className="flex-1 text-center md:text-left">
-        <h2 className="md:text-[36px] text-[30px] font-bold text-[#145C75] leading-[50px]">
+        <h2 className="md:text-[32px] text-[24px] font-bold text-[#145C75] leading-[50px]">
           🗨️ FITUR CHAT – Komunikasi Cepat & Interaktif
         </h2>
         <p className="text-[18px] text-[#000000] leading-[28px] mt-4 max-w-[500px]">

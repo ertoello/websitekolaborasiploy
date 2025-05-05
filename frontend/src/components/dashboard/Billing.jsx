@@ -47,7 +47,7 @@ const Billing = () => (
 
       {/* Bagian Kanan - Konten */}
       <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-[600px]">
-        <h2 className="text-3xl font-bold text-[#145C75] mb-4">
+        <h2 className="text-[24px] md:text-[32px] font-bold text-[#145C75] mb-4">
           📊 DASHBOARD INTERAKTIF
         </h2>
         <p className="text-lg text-[#525252] mb-6">

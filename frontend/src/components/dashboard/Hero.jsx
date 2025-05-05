@@ -27,11 +27,11 @@ const Hero = () => {
           </p>
         </div>
         <div className="flex flex-row justify-between items-center w-full">
-          <h1 className="flex-1 font-poppins font-bold md:text-[40px] text-[28px] text-[#FFFFFF] md:leading-[60px] leading-[50px]">
+          <h1 className="flex-1 font-poppins font-bold md:text-[42px] text-[30px] text-[#FFFFFF] md:leading-[60px] leading-[50px]">
             <span className="text-[#191919]">
               wujudkan masa depan digital bersama
             </span>
-            &nbsp;
+            <br />
             <span className="text-[#FF9999] font-bold">"Beopoeng"!</span>
             <br className="sm:block hidden" />
           </h1>
@@ -41,7 +41,7 @@ const Hero = () => {
           </div>
         </div>
 
-        <h2 className="font-poppins font-semibold ss:text-[18px] text-[16px] text-[#66B2D6] ss:leading-[26px] leading-[24px] w-full mt-1 flex items-center">
+        <h2 className="font-poppins font-semibold md:text-[18px] text-[16px] text-[#66B2D6] ss:leading-[26px] leading-[24px] w-full mt-1 flex items-center">
           <FaHome className="text-[#66B2D6] text-[20px] mr-2" />
           Membangun Desa Maju, Mandiri, dan Berdaya Saing!
           <FaChartLine className="text-[#66B2D6] text-[20px] ml-2" />

@@ -12,7 +12,7 @@ const BrandingSection = () => (
 
     <div className="w-full flex flex-row justify-between items-center mb-3">
       <div className="w-1/2 text-left">
-        <h2 className="text-[#145C75] font-bold text-[24px] md:text-[32px] md:text-[48px] leading-tight mb-2">
+        <h2 className="text-[#145C75] font-bold text-[24px] md:text-[32px] mb-2">
           🔖 PROFIL & BRANDING
         </h2>
         <p className="text-[#000000] text-base sm:text-lg md:text-xl">

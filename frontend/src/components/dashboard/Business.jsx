@@ -37,7 +37,7 @@ const Business = () => (
     <div
       className={`${layout.sectionInfo} bg-[#2B7A98] p-8 rounded-lg self-start`}
     >
-      <h2 className="md:text-[36px] text-[30px] font-bold text-[#FFFFFF] leading-[44px] mb-4">
+      <h2 className="text-[24px] md:text-[32px] font-bold text-[#FFFFFF] leading-[44px] mb-4">
         KOLABORASI & INOVASI <br />
         <span className="font-poppins font-semibold ss:text-[16px] text-[14px] text-[#66B2D6] ss:leading-[24px] leading-[22px] w-full mt-1 flex items-center">
           <FaHandsHelping className="text-[#66B2D6] text-[20px] mr-2" />
