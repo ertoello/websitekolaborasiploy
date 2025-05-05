@@ -13,14 +13,15 @@ const FeatureCard = ({
   totalFeatures,
 }) => (
   <div
-    className={`flex flex-row p-6 rounded-[20px] transition-all duration-300 transform hover:scale-105 hover:shadow-2xl ${
+    className={`flex flex-col sm:flex-row p-6 rounded-[20px] transition-all duration-300 transform hover:scale-105 hover:shadow-2xl ${
       index !== totalFeatures - 1 ? "mb-6" : "mb-0"
     } bg-gradient-to-r from-[#2B7A98] to-[#BF5F5F] shadow-lg`}
   >
-    <div className="w-[80px] h-[80px] rounded-full flex items-center justify-center bg-[#F4F4F4] shadow-md">
+    <div className="w-[80px] h-[80px] rounded-full flex items-center justify-center bg-[#F4F4F4] shadow-md mx-auto sm:mx-0">
       <IconComponent className="text-[#145C75] text-4xl" />
     </div>
-    <div className="flex-1 flex flex-col ml-5">
+
+    <div className="flex-1 flex flex-col mt-4 sm:mt-0 sm:ml-5 items-center sm:items-start text-center sm:text-left">
       <h4 className="font-poppins font-bold text-[#FFFFFF] text-[20px] leading-[26px] mb-2">
         {title}
       </h4>
@@ -36,7 +37,7 @@ const Business = () => (
     <div
       className={`${layout.sectionInfo} bg-[#2B7A98] p-8 rounded-lg self-start`}
     >
-      <h2 className="text-[36px] font-bold text-[#FFFFFF] leading-[44px] mb-4">
+      <h2 className="md:text-[36px] text-[30px] font-bold text-[#FFFFFF] leading-[44px] mb-4">
         KOLABORASI & INOVASI <br />
         <span className="font-poppins font-semibold ss:text-[16px] text-[14px] text-[#66B2D6] ss:leading-[24px] leading-[22px] w-full mt-1 flex items-center">
           <FaHandsHelping className="text-[#66B2D6] text-[20px] mr-2" />

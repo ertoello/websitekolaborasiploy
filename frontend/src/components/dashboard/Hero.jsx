@@ -11,7 +11,7 @@ const Hero = () => {
       className={`flex md:flex-row flex-col ${styles.paddingY}`}
     >
       <div
-        className={`flex-1 ${styles.flexStart} flex-col xl:px-0 sm:px-16 px-6`}
+        className={`flex-1 ${styles.flexStart} flex-col`}
       >
         <div className="flex flex-row items-center py-[8px] px-5 bg-[#3FA3CE] rounded-[12px] mb-4 shadow-xl">
           <img
@@ -27,7 +27,7 @@ const Hero = () => {
           </p>
         </div>
         <div className="flex flex-row justify-between items-center w-full">
-          <h1 className="flex-1 font-poppins font-bold md:text-[45px] text-[34px] text-[#FFFFFF] md:leading-[60px] leading-[50px]">
+          <h1 className="flex-1 font-poppins font-bold md:text-[40px] text-[28px] text-[#FFFFFF] md:leading-[60px] leading-[50px]">
             <span className="text-[#191919]">
               wujudkan masa depan digital bersama
             </span>
@@ -47,7 +47,7 @@ const Hero = () => {
           <FaChartLine className="text-[#66B2D6] text-[20px] ml-2" />
         </h2>
         <p
-          className={`${styles.paragraph} max-w-[570px] mt-5 text-[#000000] text-base leading-6`}
+          className={`${styles.paragraph} max-w-[570px] my-5 text-[#000000] text-base leading-6`}
         >
           Di era digital, teknologi adalah kunci kemajuan desa! Dengan
           "Beopoeng", kami menghubungkan komunitas desa dengan solusi digital
@@ -63,7 +63,7 @@ const Hero = () => {
       </div>
 
       <div
-        className={`flex-1 flex ${styles.flexCenter} md:my-0 my-10 relative`}
+        className={`flex-1 flex ${styles.flexCenter} relative`}
       >
         <img
           src={villageTech}

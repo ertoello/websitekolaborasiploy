@@ -147,7 +147,7 @@ const MessageInput = () => {
   }, [quill]);
 
   return (
-    <div className="w-full flex justify-center p-2 mb-12 md:mb-0">
+    <div className="w-full flex justify-center p-2 mb-14 md:mb-0">
       <form
         onSubmit={handleSendMessage}
         className="flex flex-col gap-3 w-[full] max-w-[80vw] md:max-w-[65vw]"
@@ -204,7 +204,9 @@ const MessageInput = () => {
         )}
 
         {/* EDITOR */}
-        <div ref={quillRef} className="bg-white rounded-md custom-editor" />
+        <div className="message-editor-wrapper">
+          <div ref={quillRef} className="bg-white rounded-md custom-editor" />
+        </div>
       </form>
     </div>
   );

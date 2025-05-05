@@ -10,12 +10,12 @@ const BrandingSection = () => (
   >
     <div className="absolute w-[60%] h-[60%] -right-[50%] rounded-full bg-[#3FA3CE] opacity-20 bottom-40" />
 
-    <div className="w-full flex flex-col md:flex-row justify-center items-center mb-3">
-      <div className="max-w-[600px] text-center md:text-left">
-        <h2 className="text-[#145C75] font-bold text-[36px] md:text-[48px] leading-tight mb-4">
+    <div className="w-full flex flex-row justify-between items-center mb-3">
+      <div className="w-1/2 text-left">
+        <h2 className="text-[#145C75] font-bold text-[24px] md:text-[32px] md:text-[48px] leading-tight mb-2">
           🔖 PROFIL & BRANDING
         </h2>
-        <p className="text-[#000000] text-lg md:text-xl">
+        <p className="text-[#000000] text-base sm:text-lg md:text-xl">
           Optimalkan{" "}
           <span className="text-[#BF5F5F] font-semibold">
             Personal Branding
@@ -23,7 +23,7 @@ const BrandingSection = () => (
           dan Kembangkan Jaringan Profesional Anda!
         </p>
       </div>
-      <Link to="/login">
+      <Link to="/login" className="w-1/2 flex justify-center">
         <img
           src={brandingImage}
           alt="Branding"
@@ -33,8 +33,8 @@ const BrandingSection = () => (
     </div>
 
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 w-full">
-      <div className="bg-[#D7D7D7] p-6 rounded-lg shadow-md flex flex-col items-center text-center">
-        <h3 className="text-[#2B7A98] font-semibold text-2xl">
+      <div className="bg-[#D7D7D7] p-6 rounded-lg shadow-md flex flex-col items-center text-left">
+        <h3 className="text-[#2B7A98] font-semibold text-2xl text-center">
           🔹 Mengapa Personal Branding Penting?
         </h3>
         <ul className="text-[#525252] text-lg mt-4 space-y-3">
@@ -46,8 +46,8 @@ const BrandingSection = () => (
       </div>
 
       <div className="bg-[#D7D7D7] p-6 rounded-lg shadow-md flex flex-col items-center text-center">
-        <h3 className="text-[#BF5F5F] font-semibold text-2xl">
-          💡 Jadilah Wajah Baru di Era Digital!
+        <h3 className="text-[#BF5F5F] font-semibold text-2xl text-center">
+          💡Jadilah Wajah Baru di Era Digital!
         </h3>
         <p className="text-[#3E3E3E] text-lg mt-4">
           Temukan strategi terbaik untuk membangun identitas digital yang{" "}

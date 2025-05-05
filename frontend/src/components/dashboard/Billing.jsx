@@ -12,39 +12,35 @@ const Billing = () => (
     {/* Background Gradient */}
     <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-[#3FA3CE] to-[#EF8B8B] opacity-10 blur-3xl -z-10"></div>
 
-    <div className="grid md:grid-cols-2 gap-8 items-center px-6 md:px-12 py-12">
+    <div className="grid md:grid-cols-2 gap-8 items-center">
       {/* Bagian Kiri - Ilustrasi */}
-      <div className="relative grid grid-cols-2 gap-4 p-6 w-full max-w-[500px] lg:max-w-[600px]">
-        {/* 2 Gambar di Kiri */}
-        <div className="flex flex-col gap-4">
+      <div className="w-full md:w-auto overflow-x-auto">
+        <div className="flex md:grid md:grid-cols-2 gap-4 p-6 w-max md:w-full">
+          {/* Gambar-gambar (semua dalam 1 baris saat mobile) */}
           <img
             src={bill}
             alt="billing"
-            className="w-full max-w-[300px] h-auto rounded-lg shadow-xl transition-transform duration-300 hover:scale-105 hover:rotate-2"
+            className="w-[250px] h-auto rounded-lg shadow-xl transition-transform duration-300 hover:scale-105 hover:rotate-2"
           />
           <img
             src={bill2}
             alt="billing2"
-            className="w-full max-w-[300px] h-auto rounded-lg shadow-md transition-transform duration-300 hover:scale-110 hover:-rotate-2"
+            className="w-[250px] h-auto rounded-lg shadow-md transition-transform duration-300 hover:scale-110 hover:-rotate-2"
           />
-        </div>
-
-        {/* 3 Gambar di Kanan */}
-        <div className="flex flex-col gap-4">
           <img
             src={bill3}
             alt="billing3"
-            className="w-full max-w-[200px] h-auto rounded-lg shadow-md transition-transform duration-300 hover:scale-110 hover:rotate-1"
+            className="w-[200px] h-auto rounded-lg shadow-md transition-transform duration-300 hover:scale-110 hover:rotate-1"
           />
           <img
             src={bill4}
             alt="billing4"
-            className="w-full max-w-[200px] h-auto rounded-lg shadow-md transition-transform duration-300 hover:scale-110 hover:-rotate-1"
+            className="w-[200px] h-auto rounded-lg shadow-md transition-transform duration-300 hover:scale-110 hover:-rotate-1"
           />
           <img
             src={bill5}
             alt="billing5"
-            className="w-full max-w-[150px] h-auto rounded-lg shadow-md transition-transform duration-300 hover:scale-110 hover:rotate-2"
+            className="w-[180px] h-auto rounded-lg shadow-md transition-transform duration-300 hover:scale-110 hover:rotate-2"
           />
         </div>
       </div>
@@ -65,7 +61,7 @@ const Billing = () => (
         </p>
 
         {/* Fitur Dashboard */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid md:grid-cols-2 grid-cols-1 gap-4">
           <div className="flex items-center space-x-3">
             <FaChartLine className="text-[#BF5F5F] text-3xl" />
             <span className="text-[#3E3E3E] font-medium">

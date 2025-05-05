@@ -40,7 +40,7 @@
 }
 
 @media (max-width: 768px) {
-  .ql-toolbar {
+  .message-editor-wrapper .ql-toolbar {
     display: none !important;
   }
 }

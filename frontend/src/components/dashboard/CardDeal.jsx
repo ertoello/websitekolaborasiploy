@@ -7,17 +7,17 @@ const ChatFeature = () => {
   return (
     <section
       id="KOMUNIKASI CEPAT & INTERAKTIF"
-      className={`py-16 px-6 rounded-2xl ${styles.flexCenter} flex-col md:flex-row`}
+      className={`rounded-2xl ${styles.flexCenter} flex-col md:flex-row`}
     >
       <div className="flex-1 text-center md:text-left">
-        <h2 className="text-[42px] font-bold text-[#145C75] leading-[50px]">
+        <h2 className="md:text-[36px] text-[30px] font-bold text-[#145C75] leading-[50px]">
           🗨️ FITUR CHAT – Komunikasi Cepat & Interaktif
         </h2>
         <p className="text-[18px] text-[#000000] leading-[28px] mt-4 max-w-[500px]">
           Bangun koneksi, wujudkan ide, dan kembangkan komunitas digital dengan
           fitur chat real-time kami!
         </p>
-        <div className="grid grid-cols-2 gap-4 mt-6">
+        <div className="grid md:grid-cols-2 grid-cols-1 gap-4 mt-6">
           <div className="flex items-center space-x-3 bg-[#EAEAEA] p-4 rounded-lg shadow">
             <FaUsers size={24} className="text-[#3FA3CE]" />
             <span className="text-[#2B7A98] font-medium">
