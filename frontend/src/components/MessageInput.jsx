@@ -147,7 +147,7 @@ const MessageInput = () => {
   }, [quill]);
 
   return (
-    <div className="w-full flex justify-center p-2 shadow-lg">
+    <div className="w-full flex justify-center p-2 mb-8 md:mb-0">
       <form
         onSubmit={handleSendMessage}
         className="flex flex-col gap-3 w-[full] max-w-[80vw] md:max-w-[65vw]"
