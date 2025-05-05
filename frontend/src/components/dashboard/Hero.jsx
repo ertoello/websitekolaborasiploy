@@ -27,7 +27,7 @@ const Hero = () => {
           </p>
         </div>
         <div className="flex flex-row justify-between items-center w-full">
-          <h1 className="flex-1 font-poppins font-bold ss:text-[42px] text-[38px] text-[#FFFFFF] ss:leading-[60px] leading-[50px]">
+          <h1 className="flex-1 font-poppins font-bold md:text-[45px] text-[34px] text-[#FFFFFF] md:leading-[60px] leading-[50px]">
             <span className="text-[#191919]">
               wujudkan masa depan digital bersama
             </span>
