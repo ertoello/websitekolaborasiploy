@@ -226,6 +226,20 @@ const HomePage = () => {
         />
       )}
 
+      {showMobilePost && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center lg:hidden">
+          <div className="bg-white rounded-lg p-4 w-full max-w-md mx-auto">
+            <PostCreation user={authUser} />
+            <button
+              onClick={() => setShowMobilePost(false)}
+              className="mt-2 text-sm text-red-500 hover:underline block text-center"
+            >
+              Tutup
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Sidebar kanan versi mobile */}
       <div
         className={`fixed top-0 right-0 h-full w-[16rem] bg-white z-50 shadow-lg transform transition-transform duration-300 lg:hidden ${
@@ -295,20 +309,6 @@ const HomePage = () => {
         </div>
       </div>
 
-      {showMobilePost && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center lg:hidden">
-          <div className="bg-white rounded-lg p-4 w-full max-w-md mx-auto">
-            <PostCreation user={authUser} />
-            <button
-              onClick={() => setShowMobilePost(false)}
-              className="mt-2 text-sm text-red-500 hover:underline block text-center"
-            >
-              Tutup
-            </button>
-          </div>
-        </div>
-      )}
-
       {/* Overlay buat sidebar kanan */}
       {isRightSidebarOpen && (
         <div
@@ -317,13 +317,6 @@ const HomePage = () => {
         />
       )}
 
-      {/* Overlay buat sidebar kanan */}
-      {isRightSidebarOpen && (
-        <div
-          onClick={() => setIsRightSidebarOpen(false)}
-          className="fixed inset-0 bg-black opacity-50 z-40 lg:hidden"
-        />
-      )}
     </div>
   );
 };
