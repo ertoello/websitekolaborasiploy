@@ -150,36 +150,9 @@ const MessageInput = () => {
     <div className="w-full flex justify-center p-2 shadow-lg">
       <form
         onSubmit={handleSendMessage}
-        className="flex flex-col gap-3 w-[full] max-w-[80vw] md:max-w-[65vw] pb-4 md:pb-0"
+        className="flex flex-col gap-3 w-[full] max-w-[80vw] md:max-w-[65vw]"
       >
-        {/* EDITOR */}
-        <div
-          ref={quillRef}
-          className="bg-white rounded-md custom-editor"
-          // style={{ minHeight: "50px" }}
-        />
-
-        {/* IMAGE PREVIEW */}
-        {imagePreview && (
-          <div className="flex items-center gap-2">
-            <div className="relative">
-              <img
-                src={imagePreview}
-                alt="Preview"
-                className="w-20 h-20 object-cover rounded-lg border"
-              />
-              <button
-                onClick={removeImage}
-                className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center"
-                type="button"
-              >
-                <X className="size-4" />
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* ACTIONS */}
+        {/* ACTIONS (pindahkan ke atas) */}
         <div className="flex items-center justify-between gap-3">
           <button
             type="button"
@@ -209,6 +182,29 @@ const MessageInput = () => {
             Kirim
           </button>
         </div>
+
+        {/* IMAGE PREVIEW */}
+        {imagePreview && (
+          <div className="flex items-center gap-2">
+            <div className="relative">
+              <img
+                src={imagePreview}
+                alt="Preview"
+                className="w-20 h-20 object-cover rounded-lg border"
+              />
+              <button
+                onClick={removeImage}
+                className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center"
+                type="button"
+              >
+                <X className="size-4" />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* EDITOR */}
+        <div ref={quillRef} className="bg-white rounded-md custom-editor" />
       </form>
     </div>
   );
