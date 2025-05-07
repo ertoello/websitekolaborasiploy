@@ -123,7 +123,18 @@ const RecommendedUser = ({ user }) => {
           className="w-12 h-12 rounded-full mr-1"
         />
         <div className="truncate">
-          <h3 className="font-semibold text-sm truncate">{user.name}</h3>
+          <div className="flex justify-center items-center gap-2">
+			<h3 className="font-semibold text-sm truncate">{user.name}</h3>
+			{user?.role === "admin" && (
+				<img
+				src="/admin.png"
+				alt="Admin Badge"
+				className="w-5 h-5 object-contain"
+				title="Admin"
+				/>
+			)}
+			</div>
+
           <p className="text-xs text-info truncate">{user.headline}</p>
         </div>
       </Link>

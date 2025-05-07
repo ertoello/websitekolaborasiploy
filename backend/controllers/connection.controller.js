@@ -155,7 +155,7 @@ export const getConnectionRequests = async (req, res) => {
 
 		const requests = await ConnectionRequest.find({ recipient: userId, status: "pending" }).populate(
 			"sender",
-			"name username profilePicture headline connections"
+			"name username profilePicture headline connections role"
 		);
 
 		res.json(requests);
@@ -171,7 +171,7 @@ export const getUserConnections = async (req, res) => {
 
 		const user = await User.findById(userId).populate(
 			"connections",
-			"name username profilePicture headline connections"
+			"name username profilePicture headline connections role"
 		);
 
 		res.json(user.connections);
@@ -251,7 +251,7 @@ export const getConnectionsByUsername = async (req, res) => {
 
     const user = await User.findOne({ username }).populate(
       "connections",
-      "name username profilePicture headline"
+      "name username profilePicture headline role"
     );
 
     if (!user) {

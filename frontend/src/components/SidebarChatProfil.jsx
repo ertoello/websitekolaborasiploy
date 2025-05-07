@@ -120,7 +120,16 @@ const SidebarChatProfil = ({ isSidebarOpen, setSidebarOpen }) => {
               {/* Nama dan status */}
               <div className="min-w-0">
                 <div className="font-semibold text-base text-[#145C75] truncate w-32">
-                  {user.name}
+                  <div className="flex items-center justify-center gap-2">
+                    {user.name}
+                    {user?.role === "admin" && (
+                      <img
+                        src="/admin.png"
+                        alt="Verified"
+                        className="w-5 h-5 object-contain"
+                      />
+                    )}
+                  </div>
                 </div>
                 <div
                   className={`text-sm ${

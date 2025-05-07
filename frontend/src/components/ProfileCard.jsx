@@ -44,7 +44,17 @@ export default function ProfileCard({ user, sidebarOpen }) {
       {/* Detail dan koneksi */}
       {sidebarOpen && (
         <>
-          <h2 className="text-xl font-semibold mt-2">{user.name}</h2>
+          <div className="flex items-center justify-center gap-2 mt-2">
+            <h2 className="text-xl font-semibold">{user.name}</h2>
+            {user?.role === "admin" && (
+              <img
+                src="/admin.png"
+                alt="Admin Badge"
+                className="w-7 h-7 object-contain"
+                title="Admin"
+              />
+            )}
+          </div>
           <p className="text-info">{user.headline}</p>
           <p
             className="text-info text-xs cursor-pointer hover:underline mt-1"
@@ -74,7 +84,18 @@ export default function ProfileCard({ user, sidebarOpen }) {
                         className="w-8 h-8 rounded-full"
                       />
                       <div>
-                        <p className="font-medium text-sm">{conn.name}</p>
+                        <div className="flex items-center gap-2">
+                          <p className="font-medium text-sm">{conn.name}</p>
+                          {conn?.role === "admin" && (
+                            <img
+                              src="/admin.png"
+                              alt="Admin Badge"
+                              className="w-3 h-3 object-contain"
+                              title="Admin"
+                            />
+                          )}
+                        </div>
+
                         <p className="text-xs text-gray-500">{conn.headline}</p>
                       </div>
                     </Link>

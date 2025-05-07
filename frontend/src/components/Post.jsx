@@ -118,7 +118,16 @@ const Post = ({ post }) => {
 
             <div>
               <Link to={`/profile/${post?.author?.username}`}>
-                <h3 className="font-semibold">{post.author.name}</h3>
+                <h3 className="font-semibold flex items-center gap-1">
+                  {post.author.name}
+                  {post?.author?.role === "admin" && (
+                    <img
+                      src="/admin.png"
+                      alt="Verified"
+                      className="w-5 h-5 object-contain"
+                    />
+                  )}
+                </h3>
               </Link>
               <p className="text-xs text-info">{post.author.headline}</p>
               <p className="text-xs text-info">
@@ -190,8 +199,15 @@ const Post = ({ post }) => {
                 />
                 <div className="flex-grow">
                   <div className="flex items-center mb-1">
-                    <span className="font-semibold mr-2">
+                    <span className="font-semibold flex items-center gap-1 mr-2">
                       {comment.user.name}
+                      {comment?.user?.role === "admin" && (
+                        <img
+                          src="/admin.png"
+                          alt="Verified"
+                          className="w-4 h-4 object-contain"
+                        />
+                      )}
                     </span>
                     <span className="text-xs text-info">
                       {formatDistanceToNow(new Date(comment.createdAt))}

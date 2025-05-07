@@ -9,7 +9,7 @@ export const getSuggestedConnections = async (req, res) => {
     const suggestedUsers = await User.find({
       _id: { $ne: req.user._id, $nin: currentUser.connections },
     })
-      .select("name username profilePicture headline")
+      .select("name username profilePicture headline role")
       .skip((page - 1) * limit) // Lompat data sesuai halaman
       .limit(Number(limit)); // Ambil hanya 'limit' data
 

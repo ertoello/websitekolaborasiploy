@@ -21,7 +21,7 @@ export const getFeedPosts = async (req, res) => {
     }
 
     const posts = await Post.find(filter)
-      .populate("author", "name username profilePicture headline")
+      .populate("author", "name username profilePicture headline role")
       .populate("comments.user", "name profilePicture")
       .sort({ createdAt: -1 });
 
@@ -91,7 +91,7 @@ export const getPostById = async (req, res) => {
 	try {
 		const postId = req.params.id;
 		const post = await Post.findById(postId)
-			.populate("author", "name username profilePicture headline")
+			.populate("author", "name username profilePicture headline role")
 			.populate("comments.user", "name profilePicture username headline");
 
 		res.status(200).json(post);
@@ -193,7 +193,7 @@ export const getPostsByUsername = async (req, res) => {
 
     // Ambil semua postingan yang dibuat oleh user tersebut
     const posts = await Post.find({ author: user._id })
-      .populate("author", "name username profilePicture headline")
+      .populate("author", "name username profilePicture headline role")
       .populate("comments.user", "name profilePicture")
       .sort({ createdAt: -1 });
 

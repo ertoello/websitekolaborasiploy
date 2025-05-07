@@ -15,12 +15,23 @@ const ChatHeader = () => {
               <img
                 src={selectedUser?.profilePicture || "/avatar.png"}
                 alt={selectedUser?.name || "User"}
+                
               />
             </div>
           </div>
 
           <div>
-            <h3 className="font-medium">{selectedUser?.name || "Unknown"}</h3>
+            <div className="flex items-center gap-1">
+              <h3 className="font-medium">{selectedUser?.name || "Unknown"}</h3>
+              {selectedUser?.role === "admin" && (
+                <img
+                  src="/admin.png"
+                  alt="Verified"
+                  className="w-5 h-5 object-contain"
+                />
+              )}
+            </div>
+
             <p className="text-sm text-base-content/70 text-green-300">
               {onlineUsers.includes(selectedUser?._id) ? "Online" : "Offline"}
             </p>

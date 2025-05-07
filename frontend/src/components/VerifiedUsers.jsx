@@ -47,9 +47,19 @@ const VerifiedUsers = ({ authUser, allUsers }) => {
 
               {/* 🔹 User Details */}
               <div className="flex-1">
-                <p className="text-md font-semibold text-[#2B7A98] leading-tight">
-                  {user.name}
-                </p>
+                <div className="flex items-center gap-2">
+                  <p className="text-md font-semibold text-[#2B7A98] leading-tight">
+                    {user.name}
+                  </p>
+                  {user?.role === "admin" && (
+                    <img
+                      src="/admin.png"
+                      alt="Verified"
+                      className="w-5 h-5 object-contain"
+                    />
+                  )}
+                </div>
+
                 <p className="text-sm text-[#3E3E3E] flex items-center gap-1 leading-tight">
                   <User size={14} /> {user.username}
                 </p>

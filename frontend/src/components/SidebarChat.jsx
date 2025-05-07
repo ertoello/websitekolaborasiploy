@@ -155,7 +155,16 @@ const SidebarChat = ({ isSidebarOpen, setSidebarOpen }) => {
 
             <div className="block text-left min-w-0">
               <div className="font-medium truncate text-[#145C75] text-sm sm:text-base">
+                <div className="flex items-center justify-center gap-2">
                 {user.name}
+                {user?.role === "admin" && (
+                  <img
+                    src="/admin.png"
+                    alt="Verified"
+                    className="w-5 h-5 object-contain"
+                  />
+                )}
+                </div>
               </div>
               <div className="text-xs text-green-200 sm:text-sm">
                 {onlineUsers.includes(user._id) ? "Online" : "Offline"}
