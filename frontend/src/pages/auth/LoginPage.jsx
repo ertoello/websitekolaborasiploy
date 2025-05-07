@@ -6,26 +6,27 @@ import FloatingShape from "../../components/FloatingShape";
 
 const LoginPage = () => {
   return (
-    <div className="flex items-center justify-center min-h-screen">
+    <div className="relative overflow-hidden flex items-center justify-center min-h-screen">
+      {/* Floating Shapes dengan posisi aman */}
       <FloatingShape
-        color="bg-[#3FA3CE]" // Biru Muda
+        color="bg-[#3FA3CE]"
         size="w-64 h-64"
-        top="-5%"
-        left="10%"
+        top="10%"
+        left="5%"
         delay={0}
       />
       <FloatingShape
-        color="bg-[#EF8B8B]" // Merah Muda Pastel
+        color="bg-[#EF8B8B]"
         size="w-48 h-48"
         top="70%"
-        left="80%"
+        left="70%"
         delay={5}
       />
       <FloatingShape
-        color="bg-[#145C75]" // Biru Tua
+        color="bg-[#145C75]"
         size="w-32 h-32"
         top="40%"
-        left="-10%"
+        left="2%"
         delay={2}
       />
 
@@ -36,7 +37,7 @@ const LoginPage = () => {
         className="bg-[#FFFFFF] p-8 rounded-2xl shadow-lg w-full max-w-4xl flex"
       >
         {/* Sembunyikan di Mobile */}
-        <div className="relative w-1/2 p-6 flex flex-col justify-center rounded-2xl text-[#3E3E3E] hidden md:flex">
+        <div className="relative w-1/2 p-6 flex flex-col justify-center rounded-2xl text-[#3E3E3E] hidden md:flex overflow-hidden">
           <div
             className="absolute inset-0 bg-cover bg-center opacity-50"
             style={{ backgroundImage: "url('/logo.png')" }}

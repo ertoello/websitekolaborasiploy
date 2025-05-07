@@ -29,6 +29,8 @@ const Navbar = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+
 
   // Fungsi pencarian
   const handleSearch = async (query) => {
@@ -96,8 +98,8 @@ const Navbar = () => {
           {authUser ? (
             <>
               {/* Search Bar dan Navigasi */}
-              <div className="flex items-center gap-6 mx-auto">
-                <div className="relative w-auto md:w-80">
+              <div className="flex items-center md:gap-6 mx-auto">
+                <div className="relative w-auto md:w-80 hidden md:block">
                   <input
                     type="text"
                     placeholder="Cari komunitas, ide, inovasi..."
@@ -174,18 +176,25 @@ const Navbar = () => {
                   </div>
                 </div>
               </div>
-              <MobileNavbar
-                authUser={authUser}
-                unreadNotificationCount={unreadNotificationCount}
-                unreadConnectionRequestsCount={unreadConnectionRequestsCount}
-                unreadMessagesCount={unreadMessagesCount?.count}
-              />
               {/* Profil & Logout */}
-              <div className="flex items-center md:gap-3">
+              <div className="flex items-center gap-10 md:gap-4">
+                {/* Tombol search untuk mobile */}
+                <button
+                  className="block md:hidden mr-2"
+                  onClick={() => setIsSearchOpen(true)}
+                >
+                  <Search size={26} />
+                </button>
                 {/* Home icon: tampil hanya di mobile */}
                 <Link to="/" className="nav-icon block md:hidden">
                   <Home size={26} />
                 </Link>
+                <MobileNavbar
+                  authUser={authUser}
+                  unreadNotificationCount={unreadNotificationCount}
+                  unreadConnectionRequestsCount={unreadConnectionRequestsCount}
+                  unreadMessagesCount={unreadMessagesCount?.count}
+                />
                 {/* Profile icon: tampil hanya di desktop */}
                 <Link
                   to={`/profile/${authUser.username}`}
@@ -233,6 +242,53 @@ const Navbar = () => {
           )}
         </div>
       </div>
+      {/* Overlay Search Mobile */}
+      {isSearchOpen && (
+        <div className="fixed inset-0 bg-white z-[9999] p-4">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-lg font-semibold">Cari</h2>
+            <button onClick={() => setIsSearchOpen(false)}>
+              <XCircle size={28} className="text-gray-600" />
+            </button>
+          </div>
+          <input
+            type="text"
+            placeholder="Cari komunitas, ide, inovasi..."
+            className="w-full bg-gray-100 px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={searchQuery}
+            onChange={(e) => handleSearch(e.target.value)}
+            autoFocus
+          />
+          {searchQuery.length > 2 && (
+            <div className="bg-white shadow-lg rounded-md mt-4 max-h-60 overflow-y-auto">
+              {searchResults.length > 0 ? (
+                searchResults.map((user) => (
+                  <Link
+                    key={user._id}
+                    to={`/profile/${user.username}`}
+                    className="px-4 py-2 hover:bg-gray-200 flex items-center space-x-2"
+                    onClick={() => setIsSearchOpen(false)}
+                  >
+                    <img
+                      className="h-8 w-8 rounded-full object-cover"
+                      src={user.profilePicture || "/avatar.png"}
+                      alt={user.name}
+                    />
+                    <span>
+                      {user.name} (@{user.username})
+                    </span>
+                  </Link>
+                ))
+              ) : (
+                <div className="flex items-center space-x-2 px-4 py-3 text-gray-600">
+                  <XCircle size={20} className="text-gray-400" />
+                  <span>Pencarian tidak ditemukan</span>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
     </nav>
   );
 };

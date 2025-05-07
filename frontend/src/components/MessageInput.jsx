@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import { useChatStore } from "../store/useChatStore";
-import { Image, Send, X } from "lucide-react";
+import { Image, Send, X, Edit3 } from "lucide-react";
 import toast from "react-hot-toast";
 import { useQuill } from "react-quilljs";
 import "quill/dist/quill.snow.css";
@@ -10,8 +10,25 @@ import "../index.css";
 const MessageInput = () => {
   const [editorText, setEditorText] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
+  const [useEditor, setUseEditor] = useState(false);
+  const [manualText, setManualText] = useState("");
   const fileInputRef = useRef(null);
   const { sendMessage } = useChatStore();
+  const textareaRef = useRef(null);
+
+  const autoResizeTextarea = () => {
+    const el = textareaRef.current;
+    if (el) {
+      el.style.height = "auto";
+      el.style.height = Math.min(el.scrollHeight, 200) + "px";
+    }
+  };
+
+  useEffect(() => {
+    autoResizeTextarea(); // saat komponen mount atau teks sudah ada
+  }, [manualText]);
+
+
   const { quill, quillRef } = useQuill({
     modules: {
       toolbar: {
@@ -46,13 +63,13 @@ const MessageInput = () => {
       "link",
     ],
     theme: "snow",
-    placeholder: "Type a message...",
+    placeholder: "Tulis pesan dengan styling...",
   });
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (!file?.type?.startsWith("image/")) {
-      toast.error("Please select an image file");
+      toast.error("Harap pilih file gambar");
       return;
     }
 
@@ -70,69 +87,38 @@ const MessageInput = () => {
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
-    if (!quill) return;
 
-    const htmlContent = quill.root.innerHTML;
-    const sanitizedText = DOMPurify.sanitize(htmlContent);
-    const plainText = sanitizedText.replace(/<(.|\n)*?>/g, "").trim();
+    let textToSend = "";
 
-    if (!plainText && !imagePreview) return;
+    if (useEditor && quill) {
+      const htmlContent = quill.root.innerHTML;
+      const sanitized = DOMPurify.sanitize(htmlContent);
+      const plain = sanitized.replace(/<(.|\n)*?>/g, "").trim();
+      if (!plain && !imagePreview) return;
+      textToSend = sanitized;
+    } else {
+      if (!manualText.trim() && !imagePreview) return;
+      textToSend = DOMPurify.sanitize(manualText.trim());
+    }
 
     try {
       await sendMessage({
-        text: sanitizedText,
+        text: textToSend,
         image: imagePreview,
       });
 
-      // Clear editor
-      quill.setText(""); // Clear content
+      // Clear input
+      if (useEditor && quill) quill.setText("");
+      setManualText("");
       setImagePreview(null);
       if (fileInputRef.current) fileInputRef.current.value = "";
     } catch (error) {
-      console.error("Failed to send message:", error);
+      console.error("Gagal mengirim pesan:", error);
     }
   };
 
   useEffect(() => {
-    const tooltips = {
-      bold: "Tebal: Membuat teks jadi tebal",
-      italic: "Miring: Membuat teks miring",
-      underline: "Garis bawah: Memberi garis bawah",
-      strike: "Coret: Menandai teks dengan coretan",
-      link: "Tautan: Menyisipkan hyperlink",
-      "code-block": "Blok kode: Format teks seperti kode",
-      blockquote: "Kutipan: Menyorot kutipan",
-      clean: "Bersihkan: Menghapus semua format teks",
-      list: "Nomor: Buat daftar bernomor",
-      bullet: "Poin: Buat daftar dengan poin",
-      "indent-1": "Geser kiri: Mengurangi indentasi",
-      "indent+1": "Geser kanan: Menambah indentasi",
-      align: "Rata: Mengatur perataan teks",
-      background: "Warna latar: Ganti warna latar belakang teks",
-      color: "Warna teks: Ganti warna teks",
-      script: "Sub/Superscript: Format pangkat bawah/atas",
-      font: "Font: Pilih jenis huruf",
-      size: "Ukuran: Atur besar kecil huruf",
-      header: "Judul: Atur level heading",
-      direction: "Arah tulisan: Kanan ke kiri / kiri ke kanan",
-    };
-
-    const buttons = document.querySelectorAll(
-      ".ql-toolbar button, .ql-toolbar select"
-    );
-    buttons.forEach((btn) => {
-      const className = Array.from(btn.classList).find((cls) =>
-        cls.startsWith("ql-")
-      );
-      if (className) {
-        const key = className.replace("ql-", "");
-        if (!btn.hasAttribute("aria-label") && tooltips[key]) {
-          btn.setAttribute("aria-label", tooltips[key]);
-        }
-      }
-    });
-
-    if (!quill) return;
+    if (!quill || !useEditor) return;
 
     const updateText = () => {
       const text = quill.getText().trim();
@@ -140,46 +126,26 @@ const MessageInput = () => {
     };
 
     quill.on("text-change", updateText);
-
     return () => {
       quill.off("text-change", updateText);
     };
-  }, [quill]);
+  }, [quill, useEditor]);
 
   return (
-    <div className="w-full flex justify-center p-2 mb-14 md:mb-0">
+    <div className="w-full flex justify-center p-2">
       <form
         onSubmit={handleSendMessage}
-        className="flex flex-col gap-3 w-[full] max-w-[80vw] md:max-w-[65vw]"
+        className="flex flex-col gap-3 w-full max-w-[80vw] md:max-w-[65vw]"
       >
-        {/* ACTIONS (pindahkan ke atas) */}
-        <div className="flex items-center justify-between gap-3">
+        {/* TOGGLE BUTTON - Hanya tampil di layar md ke atas */}
+        <div className="hidden md:flex justify-end">
           <button
             type="button"
-            className={`btn btn-sm btn-outline ${
-              imagePreview ? "text-emerald-500" : "text-zinc-400"
-            }`}
-            onClick={() => fileInputRef.current?.click()}
+            onClick={() => setUseEditor(!useEditor)}
+            className={`btn btn-sm ${useEditor ? "btn-error" : "btn-outline"}`}
           >
-            <Image size={20} className="mr-1" />
-            Upload Gambar
-          </button>
-
-          <input
-            type="file"
-            accept="image/*"
-            className="hidden"
-            ref={fileInputRef}
-            onChange={handleImageChange}
-          />
-
-          <button
-            type="submit"
-            className="btn btn-primary btn-sm"
-            disabled={editorText.length === 0 && !imagePreview}
-          >
-            <Send size={20} className="mr-1" />
-            Kirim
+            <Edit3 size={18} className="mr-1" />
+            {useEditor ? "Matikan Tools Editor" : "Tambahkan Tools Editor"}
           </button>
         </div>
 
@@ -203,9 +169,54 @@ const MessageInput = () => {
           </div>
         )}
 
-        {/* EDITOR */}
-        <div className="message-editor-wrapper">
-          <div ref={quillRef} className="bg-white rounded-md custom-editor" />
+        {/* EDITOR OR PLAIN TEXTAREA */}
+        {useEditor ? (
+          <div
+            ref={quillRef}
+            className="bg-white rounded-md md:max-h-[200px] max-h-[100px] overflow-y-auto border border-gray-300"
+          />
+        ) : (
+          <textarea
+            ref={textareaRef}
+            className="textarea textarea-bordered min-h-0 max-h-[150px] md:max-h-[200px] overflow-y-auto resize-none"
+            placeholder="Tulis pesan..."
+            value={manualText}
+            onChange={(e) => {
+              setManualText(e.target.value);
+              autoResizeTextarea();
+            }}
+          />
+        )}
+
+        {/* ACTION BUTTONS */}
+        <div className="flex items-center justify-between gap-3">
+          <button
+            type="button"
+            className={`btn btn-sm btn-outline ${
+              imagePreview ? "text-emerald-500" : "text-zinc-400"
+            }`}
+            onClick={() => fileInputRef.current?.click()}
+          >
+            <Image size={20} className="mr-1" />
+            Upload Gambar
+          </button>
+
+          <input
+            type="file"
+            accept="image/*"
+            className="hidden"
+            ref={fileInputRef}
+            onChange={handleImageChange}
+          />
+
+          <button
+            type="submit"
+            className="btn btn-primary btn-sm"
+            disabled={!editorText.trim() && !manualText.trim() && !imagePreview}
+          >
+            <Send size={20} className="mr-1" />
+            Kirim
+          </button>
         </div>
       </form>
     </div>

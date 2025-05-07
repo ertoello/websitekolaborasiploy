@@ -4,11 +4,12 @@ import FloatingShape from "../../components/FloatingShape";
 
 const SignUpPage = () => {
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row justify-center items-center">
+    <div className="relative min-h-screen flex flex-col lg:flex-row justify-center items-center overflow-hidden">
+      {/* Floating Shapes - aman di dalam viewport */}
       <FloatingShape
         color="bg-[#3FA3CE]" // Biru Muda
         size="w-64 h-64"
-        top="-5%"
+        top="0%"
         left="10%"
         delay={0}
       />
@@ -16,19 +17,19 @@ const SignUpPage = () => {
         color="bg-[#EF8B8B]" // Merah Muda Pastel
         size="w-48 h-48"
         top="70%"
-        left="80%"
+        left="70%"
         delay={5}
       />
       <FloatingShape
         color="bg-[#145C75]" // Biru Tua
         size="w-32 h-32"
         top="40%"
-        left="-10%"
+        left="5%"
         delay={2}
       />
 
       {/* Bagian Kiri - Informasi */}
-      <div className="lg:w-1/2 text-center lg:text-left">
+      <div className="lg:w-1/2 text-center lg:text-left px-6">
         <img
           className="mx-auto h-32 w-auto mb-6"
           src="/logopanjang1.png"
@@ -39,18 +40,22 @@ const SignUpPage = () => {
           Bangun koneksi, wujudkan ide, dan kembangkan komunitas digital dengan
           lebih mudah dan modern.
         </p>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-4 mt-4">
           <img
-            className="h-full rounded-lg"
+            className="h-full rounded-lg object-cover"
             src="/kolaborasi.png"
             alt="Kolaborasi"
           />
-          <img className="h-full rounded-lg" src="/inovasi.png" alt="Inovasi" />
+          <img
+            className="h-full rounded-lg object-cover"
+            src="/inovasi.png"
+            alt="Inovasi"
+          />
         </div>
       </div>
 
       {/* Bagian Kanan - Formulir Pendaftaran */}
-      <div className="lg:w-1/2 mt-10 lg:mt-0 w-full max-w-lg bg-white p-10 rounded-2xl shadow-xl">
+      <div className="lg:w-1/2 mt-10 lg:mt-0 w-full max-w-lg bg-white p-10 rounded-2xl shadow-xl z-10">
         <h3 className="text-2xl font-semibold text-[#145C75] text-center mb-4">
           Daftar Sekarang
         </h3>
@@ -77,4 +82,5 @@ const SignUpPage = () => {
     </div>
   );
 };
+
 export default SignUpPage;
