@@ -2,54 +2,24 @@ import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
   {
-    name: {
-      type: String,
-      required: true,
-    },
+    name: { type: String, required: true },
     nik: { type: String, required: true, unique: true },
     username: { type: String, required: true, unique: true },
-    email: { type: String, required: true},
+    email: { type: String, required: true },
     password: { type: String, required: true },
-    lastLogin: {
-      type: Date,
-      default: Date.now,
-    },
-    role: {
-      type: String,
-      default: "user",
-    },
-    isVerified: {
-      type: Boolean,
-      default: false,
-    },
-    isApproved: {
-      type: Boolean,
-      default: false,
-    },
+    lastLogin: { type: Date, default: Date.now },
+    role: { type: String, default: "user" },
+    isVerified: { type: Boolean, default: false },
+    isApproved: { type: Boolean, default: false },
     resetPasswordToken: String,
     resetPasswordExpiresAt: Date,
     verificationToken: String,
     verificationTokenExpiresAt: Date,
-    profilePicture: {
-      type: String,
-      default: "",
-    },
-    bannerImg: {
-      type: String,
-      default: "",
-    },
-    headline: {
-      type: String,
-      default: "Pengguna Baru",
-    },
-    location: {
-      type: String,
-      default: "Earth",
-    },
-    about: {
-      type: String,
-      default: "",
-    },
+    profilePicture: { type: String, default: "" },
+    bannerImg: { type: String, default: "" },
+    headline: { type: String, default: "Pengguna Baru" },
+    location: { type: String, default: "Earth" },
+    about: { type: String, default: "" },
     skills: [String],
     experience: [
       {
@@ -78,16 +48,17 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// ✅ Middleware diletakkan SETELAH schema didefinisikan
+// 🛠️ Middleware harus dipanggil setelah definisi schema
 userSchema.pre("findOneAndDelete", async function (next) {
   const userId = this.getQuery()["_id"];
-  const Post = (await import("./Post.js")).default;
-  const Message = (await import("./Message.js")).default;
-  const Notification = (await import("./Notification.js")).default;
-  const ConnectionRequest = (await import("./ConnectionRequest.js")).default;
-  const User = (await import("./User.js")).default;
 
   try {
+    const Post = (await import("./post.model.js")).default;
+    const Message = (await import("./message.model.js")).default;
+    const Notification = (await import("./notification.model.js")).default;
+    const ConnectionRequest = (await import("./connectionRequest.model.js")).default;
+    const User = mongoose.model("User"); // 👈 aman karena model sudah didefinisikan di bawah
+
     await Post.deleteMany({ author: userId });
 
     await Post.updateMany(
@@ -113,7 +84,6 @@ userSchema.pre("findOneAndDelete", async function (next) {
       { connections: userId },
       { $pull: { connections: userId } }
     );
-
     next();
   } catch (err) {
     next(err);

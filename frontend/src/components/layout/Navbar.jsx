@@ -186,6 +186,17 @@ const Navbar = () => {
                   <Search size={26} />
                 </button>
                 {/* Home icon: tampil hanya di mobile */}
+                {/* Link Dashboard Admin */}
+                {authUser?.role === "admin" && (
+                  <Link
+                    to="/dashboardadmin"
+                    className="nav-icon hidden md:block px-2 py-2 rounded-md bg-gray-300 hover:bg-[#3FA3CE] shadow-lg hover:text-gray-100"
+                  >
+                    <span className="text-md font-semibold">
+                      Dashboard Admin
+                    </span>
+                  </Link>
+                )}
                 <Link to="/" className="nav-icon block md:hidden">
                   <Home size={26} />
                 </Link>

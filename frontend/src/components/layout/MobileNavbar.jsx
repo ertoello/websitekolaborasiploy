@@ -50,7 +50,17 @@ const MobileNavbar = ({
           </button>
         </div>
 
-        <div className="p-4 flex flex-col gap-4">
+        <div className="p-4 flex flex-col space-y-6">
+          {/* Link Dashboard Admin (hanya untuk admin) */}
+          {authUser?.role === "admin" && (
+            <Link
+              to="/dashboardadmin"
+              className="flex items-center gap-2"
+              onClick={() => setIsOpen(false)}
+            >
+              <Home size={24} /> Dashboard Admin
+            </Link>
+          )}
           <Link
             to="/network"
             className="flex items-center gap-2 relative"
