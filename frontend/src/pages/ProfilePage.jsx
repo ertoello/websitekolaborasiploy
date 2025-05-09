@@ -1,7 +1,7 @@
+import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { axiosInstance } from "../lib/axios";
-
 import ProfileHeader from "../components/ProfileHeader";
 import AboutSection from "../components/AboutSection";
 import ExperienceSection from "../components/ExperienceSection";
@@ -13,8 +13,14 @@ import toast from "react-hot-toast";
 const ProfilePage = () => {
   const { username } = useParams();
   const queryClient = useQueryClient();
+  const [activeSection, setActiveSection] = useState(null);
 
-  const { data: authUser, isLoading: isAuthLoading } = useQuery({
+  // Get authenticated user
+  const {
+    data: authUser,
+    isLoading: isAuthLoading,
+    isError: isAuthError,
+  } = useQuery({
     queryKey: ["authUser"],
     queryFn: async () => {
       const response = await axiosInstance.get("/auth/me");
@@ -22,7 +28,12 @@ const ProfilePage = () => {
     },
   });
 
-  const { data: userProfile, isLoading: isUserProfileLoading } = useQuery({
+  // Get profile of user by username
+  const {
+    data: profileUser,
+    isLoading: isProfileLoading,
+    isError: isProfileError,
+  } = useQuery({
     queryKey: ["userProfile", username],
     queryFn: async () => {
       const response = await axiosInstance.get(`/users/${username}`);
@@ -30,10 +41,11 @@ const ProfilePage = () => {
     },
   });
 
+  // Get user posts
   const {
-    data: posts,
+    data: userPosts,
     isLoading: isPostsLoading,
-    isError,
+    isError: isPostsError,
   } = useQuery({
     queryKey: ["userPosts", username],
     queryFn: async () => {
@@ -42,6 +54,7 @@ const ProfilePage = () => {
     },
   });
 
+  // Update profile
   const { mutate: updateProfile } = useMutation({
     mutationFn: async (updatedData) => {
       await axiosInstance.put("/users/profile", updatedData);
@@ -52,59 +65,115 @@ const ProfilePage = () => {
     },
   });
 
-  if (isAuthLoading || isUserProfileLoading) {
-    return <p>Loading profile...</p>;
+  const isOwnProfile = authUser?.username === profileUser?.username;
+  const displayedUser = isOwnProfile ? authUser : profileUser;
+
+  const toggleSection = (section) => {
+    setActiveSection(activeSection === section ? null : section);
+  };
+
+  if (isAuthLoading || isProfileLoading) {
+    return <p className="text-center text-gray-500">Loading profile...</p>;
   }
 
-  if (!authUser || !userProfile) {
-    return <p>Failed to load profile</p>;
+  if (isAuthError || isProfileError || !authUser || !profileUser) {
+    return <p className="text-center text-red-500">Failed to load profile.</p>;
   }
-
-  const isOwnProfile = authUser?.username === userProfile?.username;
-  const userData = isOwnProfile ? authUser : userProfile;
 
   return (
     <div className="max-w-6xl mx-auto p-4">
-      {/* Profile Header di Tengah */}
+      {/* Header */}
       <ProfileHeader
-        userData={userData}
+        userData={displayedUser}
         isOwnProfile={isOwnProfile}
         onSave={updateProfile}
       />
 
-      {/* Grid Layout untuk membagi halaman */}
-      <div className="grid grid-cols-12 gap-4 mt-6 shadow-2xl">
-        {/* Kolom Kiri - Posts */}
-        <div className="col-span-8 bg-white p-4 rounded-lg shadow">
-          <h2 className="text-2xl font-bold mb-4">Posts</h2>
+      {/* Mobile View: Toggle Buttons */}
+      <div className="block md:hidden space-y-2 my-4">
+        {["about", "experience", "education", "skills"].map((section) => (
+          <div key={section}>
+            <button
+              onClick={() => toggleSection(section)}
+              className={`w-full p-2 rounded font-semibold ${
+                activeSection === section ? "bg-[#78C1E4]" : "bg-[#3FA3CE]"
+              } text-white transition duration-200`}
+            >
+              {section.charAt(0).toUpperCase() + section.slice(1)}
+            </button>
+
+            {activeSection === section && (
+              <div className="mt-2 bg-white p-4 rounded shadow">
+                {section === "about" && (
+                  <AboutSection
+                    userData={displayedUser}
+                    isOwnProfile={isOwnProfile}
+                    onSave={updateProfile}
+                  />
+                )}
+                {section === "experience" && (
+                  <ExperienceSection
+                    userData={displayedUser}
+                    isOwnProfile={isOwnProfile}
+                    onSave={updateProfile}
+                  />
+                )}
+                {section === "education" && (
+                  <EducationSection
+                    userData={displayedUser}
+                    isOwnProfile={isOwnProfile}
+                    onSave={updateProfile}
+                  />
+                )}
+                {section === "skills" && (
+                  <SkillsSection
+                    userData={displayedUser}
+                    isOwnProfile={isOwnProfile}
+                    onSave={updateProfile}
+                  />
+                )}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* Desktop View: Grid Layout */}
+      <div className="grid grid-cols-12 gap-4 mt-6">
+        {/* Posts Section */}
+        <div className="col-span-12 md:col-span-8 p-0 md:p-2">
+          <h2 className="md:text-2xl text-xl font-bold mb-2 text-center">
+            Postingan {profileUser?.name || profileUser?.username}
+          </h2>
+
           {isPostsLoading && <p>Loading posts...</p>}
-          {isError && <p>Failed to load posts</p>}
-          {!posts || posts.length === 0 ? (
-            <p>No posts available</p>
+          {isPostsError && <p>Failed to load posts.</p>}
+          {!userPosts || userPosts.length === 0 ? (
+            <p>No posts available.</p>
           ) : (
-            posts.map((post) => <UserPosts key={post._id} post={post} />)
+            userPosts.map((post) => <UserPosts key={post._id} post={post} />)
           )}
         </div>
 
-        {/* Kolom Kanan - About, Experience, Education, Skills */}
-        <div className="col-span-4 bg-white p-4 rounded-lg shadow-2xl">
+        {/* Sidebar for Desktop */}
+        <div className="hidden md:block col-span-4 p-4 rounded shadow space-y-6">
           <AboutSection
-            userData={userData}
+            userData={displayedUser}
             isOwnProfile={isOwnProfile}
             onSave={updateProfile}
           />
           <ExperienceSection
-            userData={userData}
+            userData={displayedUser}
             isOwnProfile={isOwnProfile}
             onSave={updateProfile}
           />
           <EducationSection
-            userData={userData}
+            userData={displayedUser}
             isOwnProfile={isOwnProfile}
             onSave={updateProfile}
           />
           <SkillsSection
-            userData={userData}
+            userData={displayedUser}
             isOwnProfile={isOwnProfile}
             onSave={updateProfile}
           />

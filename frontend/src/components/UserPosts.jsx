@@ -102,8 +102,33 @@ const UserPosts = ({ post }) => {
     }
   };
 
+  const handleShare = async () => {
+      const url = `${window.location.origin}/post/${post._id}`;
+  
+      if (navigator.share) {
+        // Untuk perangkat mobile
+        try {
+          await navigator.share({
+            title: "Lihat postingan ini!",
+            text: "Cek postingan keren ini!",
+            url: url,
+          });
+        } catch (err) {
+          toast.error("Share dibatalkan atau gagal.");
+        }
+      } else {
+        // Untuk desktop
+        try {
+          await navigator.clipboard.writeText(url);
+          toast.success("Link berhasil disalin ke clipboard!");
+        } catch (err) {
+          toast.error("Gagal menyalin link.");
+        }
+      }
+    };
+
   return (
-    <div className="bg-secondary rounded-lg shadow mb-4">
+    <div className="bg-secondary rounded-lg mb-5 shadow-xl">
       <div className="p-4">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center">
@@ -150,18 +175,18 @@ const UserPosts = ({ post }) => {
           )}
         </div>
         <div
-          className="prose max-w-none"
+          className="prose max-w-none break-words whitespace-pre-wrap overflow-hidden border border-gray-300 shadow-md hover:shadow-lg p-4 transition-all duration-300 rounded-md"
           dangerouslySetInnerHTML={{ __html: post.content }}
         ></div>
         {post.image && (
           <img
             src={post.image}
             alt="Post content"
-            className="rounded-lg w-full mb-4"
+            className="rounded-md w-full mb-4 border border-gray-300 shadow-md hover:shadow-lg transition-all duration-300"
           />
         )}
 
-        <div className="flex justify-between text-info">
+        <div className="flex justify-between text-info mt-4">
           <PostAction
             icon={
               <ThumbsUp
@@ -178,7 +203,11 @@ const UserPosts = ({ post }) => {
             text={`Comment (${comments.length})`}
             onClick={() => setShowComments(!showComments)}
           />
-          <PostAction icon={<Share2 size={18} />} text="Share" />
+          <PostAction
+            icon={<Share2 size={18} />}
+            text="Share"
+            onClick={handleShare}
+          />
         </div>
       </div>
 

@@ -178,8 +178,19 @@ const ProfileHeader = ({ userData, onSave, isOwnProfile }) => {
 		setIsEditing(false);
 	};
 
+  const { data: userPostsData } = useQuery({
+  queryKey: ["postsByUser", userData.username],
+  queryFn: async () => {
+    const response = await axiosInstance.get(
+      `/posts/user/${userData.username}`
+    );
+    return response.data; // kamu *berharap* ini berupa { total, posts }
+  },
+  enabled: !!userData.username,
+});
+
 	return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-2 bg-gray-100 shadow-2xl">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-2 shadow-xl">
       {/* Bagian Kiri - Profile */}
       <div className="md:col-span-2 bg-white shadow-lg rounded-lg space-y-3 flex flex-col items-center">
         <div className="bg-white w-full">
@@ -297,8 +308,7 @@ const ProfileHeader = ({ userData, onSave, isOwnProfile }) => {
               ) : (
                 <button
                   onClick={() => setIsEditing(true)}
-                  className="w-full bg-primary text-white py-2 px-4 rounded-full hover:bg-primary-dark
-							 transition duration-300"
+                  className="w-full bg-[#3FA3CE] hover:bg-[#78C1E4] text-white py-2 px-4 rounded-full"
                 >
                   Edit Profile
                 </button>
@@ -314,23 +324,27 @@ const ProfileHeader = ({ userData, onSave, isOwnProfile }) => {
 
       {/* Bagian Kanan - Konten Tambahan */}
       <div className="md:col-span-1 bg-white shadow-lg rounded-lg p-5 space-y-4">
-        <h2 className="text-lg font-semibold text-gray-700">User Stats</h2>
+        <h2 className="text-lg font-semibold text-gray-700">
+          Statistika Pengguna
+        </h2>
         <div className="flex justify-between items-center p-3 border rounded-md shadow-sm">
-          <span className="text-gray-600">Connections</span>
+          <span className="text-gray-600">Jumlah Koneksi</span>
           <span className="font-semibold text-blue-500">
             {userData?.connections?.length ?? 0}
           </span>
         </div>
         <div className="flex justify-between items-center p-3 border rounded-md shadow-sm">
-          <span className="text-gray-600">Posts</span>
-          <span className="font-semibold text-blue-500">
-            {userData?.posts?.length ?? 0}
-          </span>
+          <span className="text-gray-600">Total Postingan</span>
+          {userPostsData && (
+            <div className="font-semibold text-blue-500">
+              {userPostsData.length}
+            </div>
+          )}
         </div>
         {!isOwnProfile && (
           <button
             onClick={handleGoToMessages}
-            className="bg-blue-500 text-white p-2 rounded"
+            className="bg-[#3FA3CE] text-white p-2 rounded-md"
           >
             Chat dengan {userData.name}
           </button>
