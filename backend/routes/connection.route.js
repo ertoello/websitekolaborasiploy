@@ -10,6 +10,7 @@ import {
   sendConnectionRequest,
   getUserById,
   getConnectionsByUsername,
+  cancelConnectionRequest,
 } from "../controllers/connection.controller.js";
 
 const router = express.Router();
@@ -19,6 +20,7 @@ router.put("/accept/:requestId", protectRoute, acceptConnectionRequest);
 router.put("/reject/:requestId", protectRoute, rejectConnectionRequest);
 // Get all connection requests for the current user
 router.get("/requests", protectRoute, getConnectionRequests);
+router.delete("/cancel-request/:userId", protectRoute, cancelConnectionRequest);
 // Get all connections for a user
 router.get("/", protectRoute, getUserConnections);
 router.delete("/:userId", protectRoute, removeConnection);

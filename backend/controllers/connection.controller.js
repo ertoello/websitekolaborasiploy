@@ -264,3 +264,30 @@ export const getConnectionsByUsername = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+export const cancelConnectionRequest = async (req, res) => {
+  try {
+    const { userId } = req.params; // orang yang menerima permintaan
+    const senderId = req.user._id;
+
+    const request = await ConnectionRequest.findOne({
+      sender: senderId,
+      recipient: userId,
+      status: "pending",
+    });
+
+    if (!request) {
+      return res
+        .status(404)
+        .json({ message: "No pending connection request found" });
+    }
+
+    await ConnectionRequest.findByIdAndDelete(request._id);
+
+    res.json({ message: "Connection request canceled successfully" });
+  } catch (error) {
+    console.error("Error in cancelConnectionRequest controller:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+  

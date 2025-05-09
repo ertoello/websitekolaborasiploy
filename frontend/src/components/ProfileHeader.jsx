@@ -89,10 +89,13 @@ const ProfileHeader = ({ userData, onSave, isOwnProfile }) => {
 	});
 
 	const getConnectionStatus = useMemo(() => {
-		if (isConnected) return "connected";
-		if (!isConnected) return "not_connected";
-		return connectionStatus?.data?.status;
-	}, [isConnected, connectionStatus]);
+    if (connectionStatus?.data?.status) {
+      return connectionStatus.data.status; // prioritaskan dari server
+    }
+    if (isConnected) return "connected";
+    return "not_connected";
+  }, [isConnected, connectionStatus]);
+  
 
 	const renderConnectionButton = () => {
     const baseClass =
@@ -127,11 +130,16 @@ const ProfileHeader = ({ userData, onSave, isOwnProfile }) => {
         );
       case "pending":
         return (
-          <button className={`${baseClass} bg-yellow-500 hover:bg-yellow-600`}>
+          <button
+            onClick={() => cancelRequest(userData._id)}
+            className={`${baseClass} bg-yellow-500 hover:bg-yellow-600`}
+            title="Click to cancel request"
+          >
             <Clock size={20} className="mr-2" />
             Pending
           </button>
         );
+
       case "received":
         return (
           <div className="flex gap-2 justify-center">
@@ -188,6 +196,20 @@ const ProfileHeader = ({ userData, onSave, isOwnProfile }) => {
   },
   enabled: !!userData.username,
 });
+
+const { mutate: cancelRequest } = useMutation({
+  mutationFn: (userId) =>
+    axiosInstance.delete(`/connections/cancel-request/${userId}`),
+  onSuccess: () => {
+    toast.success("Connection request canceled");
+    refetchConnectionStatus();
+    queryClient.invalidateQueries(["connectionRequests"]);
+  },
+  onError: (error) => {
+    toast.error(error.response?.data?.message || "An error occurred");
+  },
+});
+
 
 	return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-2 shadow-xl">
