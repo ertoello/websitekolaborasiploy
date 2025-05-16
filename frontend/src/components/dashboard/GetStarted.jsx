@@ -20,7 +20,7 @@ const GetStarted = () => (
     >
       <div className={`${styles.flexStart} flex-row`}>
         <p className="font-poppins font-semibold text-[16px] leading-[20px] text-[#FFFFFF]">
-          <span className="text-[#FFFFFF]">Jelajahi</span>
+          <span className="text-[#FFFFFF]">Klik Disini</span>
         </p>
         <img
           src={arrowUp}
@@ -30,7 +30,7 @@ const GetStarted = () => (
       </div>
 
       <p className="font-poppins font-semibold text-[16px] leading-[20px] text-[#FFFFFF]">
-        <span className="text-[#FFFFFF]">Solusi Digital</span>
+        <span className="text-[#FFFFFF]">Untuk Login</span>
       </p>
     </div>
   </div>

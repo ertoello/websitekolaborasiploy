@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema(
     profilePicture: { type: String, default: "" },
     bannerImg: { type: String, default: "" },
     headline: { type: String, default: "Pengguna Baru" },
-    location: { type: String, default: "Earth" },
+    location: { type: String, default: "Lokasi Anda" },
     about: { type: String, default: "" },
     skills: [String],
     experience: [

@@ -9,6 +9,8 @@ import EducationSection from "../components/EducationSection";
 import SkillsSection from "../components/SkillsSection";
 import UserPosts from "../components/UserPosts";
 import toast from "react-hot-toast";
+import { Users } from "lucide-react";
+
 
 const ProfilePage = () => {
   const { username } = useParams();
@@ -142,14 +144,37 @@ const ProfilePage = () => {
       <div className="grid grid-cols-12 gap-4 mt-6">
         {/* Posts Section */}
         <div className="col-span-12 md:col-span-8 p-0 md:p-2">
-          <h2 className="md:text-2xl text-xl font-bold mb-2 text-center">
+          <h2 className="md:text-2xl text-xl font-bold mb-4 text-center text-gray-800">
             Postingan {profileUser?.name || profileUser?.username}
           </h2>
 
-          {isPostsLoading && <p>Loading posts...</p>}
-          {isPostsError && <p>Failed to load posts.</p>}
+          {isPostsLoading && (
+            <div className="text-center text-blue-500 font-medium animate-pulse">
+              Memuat postingan...
+            </div>
+          )}
+
+          {isPostsError && (
+            <div className="text-center text-red-500 font-semibold">
+              Gagal memuat postingan. Silakan coba lagi nanti.
+            </div>
+          )}
+
           {!userPosts || userPosts.length === 0 ? (
-            <p>No posts available.</p>
+            <div className="bg-white rounded-xl shadow-md p-6 text-center mt-4">
+              <div className="mb-4">
+                <Users
+                  size={48}
+                  className="mx-auto text-blue-400"
+                />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-700 mb-2">
+                Belum ada postingan
+              </h3>
+              <p className="text-gray-500">
+                Pengguna ini belum membagikan apapun.
+              </p>
+            </div>
           ) : (
             userPosts.map((post) => <UserPosts key={post._id} post={post} />)
           )}

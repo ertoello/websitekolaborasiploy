@@ -116,16 +116,20 @@ const HomePage = () => {
           <Post key={post._id} post={post} />
         ))}
 
-        {posts?.length === 0 && (
-          <div className="bg-white rounded-lg shadow p-8 text-center">
+        {posts.length === 0 && (
+          <div className="bg-gradient-to-br from-blue-50 to-white rounded-2xl shadow-lg p-10 text-center animate-fade-in transition-all duration-500 ease-in-out">
             <div className="mb-6">
-              <Users size={64} className="mx-auto text-blue-500" />
+              <Users
+                size={64}
+                className="mx-auto text-blue-500 animate-bounce"
+              />
             </div>
-            <h2 className="text-2xl font-bold mb-4 text-gray-800">
-              No Posts Yet
+            <h2 className="text-3xl font-extrabold mb-4 text-gray-800 tracking-wide">
+              Belum Ada Postingan
             </h2>
-            <p className="text-gray-600 mb-6">
-              Connect with others to start seeing posts in your feed!
+            <p className="text-gray-600 mb-6 text-lg leading-relaxed">
+              Ayo mulai terhubung dengan pengguna lain dan jadilah yang pertama
+              membagikan sesuatu yang menarik!
             </p>
           </div>
         )}
@@ -202,7 +206,7 @@ const HomePage = () => {
           isLeftSidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="p-4 border-b flex justify-between items-center bg-blue-600 text-white">
+        <div className="p-4 border-b flex justify-between items-center bg-gray-400 text-white">
           <span className="font-bold">Menu</span>
           <button
             onClick={() => setIsLeftSidebarOpen(false)}
@@ -232,7 +236,7 @@ const HomePage = () => {
             <PostCreation user={authUser} />
             <button
               onClick={() => setShowMobilePost(false)}
-              className="mt-2 text-sm text-red-500 hover:underline block text-center"
+              className="mt-4 px-3 py-1 bg-[#EF8B8B] text-white font-semibold rounded-md shadow-md hover:shadow-lg"
             >
               Tutup
             </button>
@@ -246,7 +250,7 @@ const HomePage = () => {
           isRightSidebarOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <div className="p-4 border-b flex justify-between items-center bg-blue-600 text-white">
+        <div className="p-4 border-b flex justify-between items-center bg-gray-400 text-white">
           <span className="font-bold">Rekomendasi Teman</span>
           <button
             onClick={() => setIsRightSidebarOpen(false)}
@@ -316,7 +320,6 @@ const HomePage = () => {
           className="fixed inset-0 bg-black opacity-50 z-40 lg:hidden"
         />
       )}
-
     </div>
   );
 };

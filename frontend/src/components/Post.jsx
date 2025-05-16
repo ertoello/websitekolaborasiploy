@@ -12,6 +12,8 @@ import {
   Trash2,
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import { id } from "date-fns/locale";
+
 
 import PostAction from "./PostAction";
 // import DOMPurify from "dompurify";
@@ -47,6 +49,8 @@ const Post = ({ post }) => {
       toast.error(error.message);
     },
   });
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const { mutate: createComment, isPending: isAddingComment } = useMutation({
     mutationFn: async (newComment) => {
@@ -158,13 +162,14 @@ const Post = ({ post }) => {
               <p className="text-xs text-info">
                 {formatDistanceToNow(new Date(post.createdAt), {
                   addSuffix: true,
+                  locale: id,
                 })}
               </p>
             </div>
           </div>
           {isOwner && (
             <button
-              onClick={handleDeletePost}
+              onClick={() => setShowDeleteModal(true)}
               className="text-red-500 hover:text-red-700"
             >
               {isDeletingPost ? (
@@ -173,6 +178,63 @@ const Post = ({ post }) => {
                 <Trash2 size={18} />
               )}
             </button>
+          )}
+
+          {showDeleteModal && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+              <div className="bg-white p-6 rounded-lg shadow-lg w-80">
+                <h2 className="text-lg font-semibold mb-4">Hapus Postingan?</h2>
+                <p className="text-sm text-gray-600 mb-4">
+                  Apakah kamu yakin ingin menghapus postingan ini? Tindakan ini
+                  tidak bisa dibatalkan.
+                </p>
+                <div className="flex justify-end space-x-2">
+                  <button
+                    onClick={() => setShowDeleteModal(false)}
+                    className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 text-sm"
+                  >
+                    Batal
+                  </button>
+                  <button
+                    onClick={() => {
+                      deletePost();
+                      setShowDeleteModal(false);
+                    }}
+                    className="px-4 py-2 rounded bg-red-500 hover:bg-red-600 text-white text-sm"
+                  >
+                    Hapus!
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+          {showDeleteModal && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+              <div className="bg-white p-6 rounded-lg shadow-lg w-80">
+                <h2 className="text-lg font-semibold mb-4">Hapus Postingan?</h2>
+                <p className="text-sm text-gray-600 mb-4">
+                  Apakah kamu yakin ingin menghapus postingan ini? Tindakan ini
+                  tidak bisa dibatalkan.
+                </p>
+                <div className="flex justify-end space-x-2">
+                  <button
+                    onClick={() => setShowDeleteModal(false)}
+                    className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 text-sm"
+                  >
+                    Batal
+                  </button>
+                  <button
+                    onClick={() => {
+                      deletePost();
+                      setShowDeleteModal(false);
+                    }}
+                    className="px-4 py-2 rounded bg-red-500 hover:bg-red-600 text-white text-sm"
+                  >
+                    Hapus!
+                  </button>
+                </div>
+              </div>
+            </div>
           )}
         </div>
         <div
@@ -239,7 +301,10 @@ const Post = ({ post }) => {
                       )}
                     </span>
                     <span className="text-xs text-info">
-                      {formatDistanceToNow(new Date(comment.createdAt))}
+                      {formatDistanceToNow(new Date(comment.createdAt), {
+                        addSuffix: true,
+                        locale: id,
+                      })}
                     </span>
                   </div>
                   <p>{comment.content}</p>

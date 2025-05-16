@@ -12,6 +12,8 @@ import {
   Trash2,
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import { id } from "date-fns/locale"; // Tambahkan ini!
+
 
 import PostAction from "./PostAction";
 
@@ -79,8 +81,17 @@ const UserPosts = ({ post }) => {
 
   const handleLikePost = async () => {
     if (isLikingPost) return;
+
+    // Optimistic UI update (langsung update post.likes lokal)
+    if (isLiked) {
+      post.likes = post.likes.filter((id) => id !== authUser._id);
+    } else {
+      post.likes.push(authUser._id);
+    }
+
     likePost();
   };
+  
 
   const handleAddComment = async (e) => {
     e.preventDefault();
@@ -157,6 +168,7 @@ const UserPosts = ({ post }) => {
               <p className="text-xs text-info">
                 {formatDistanceToNow(new Date(post.createdAt), {
                   addSuffix: true,
+                  locale: id,
                 })}
               </p>
             </div>
@@ -237,7 +249,10 @@ const UserPosts = ({ post }) => {
                       )}
                     </span>
                     <span className="text-xs text-info">
-                      {formatDistanceToNow(new Date(comment.createdAt))}
+                      {formatDistanceToNow(new Date(comment.createdAt), {
+                        addSuffix: true,
+                        locale: id,
+                      })}
                     </span>
                   </div>
                   <p>{comment.content}</p>

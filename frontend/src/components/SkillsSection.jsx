@@ -24,7 +24,7 @@ const SkillsSection = ({ userData, isOwnProfile, onSave }) => {
 
 	return (
 		<div className='bg-white shadow rounded-lg p-6'>
-			<h2 className='text-xl font-semibold mb-4'>Skills</h2>
+			<h2 className='text-xl font-semibold mb-4'>Kemampuan</h2>
 			<div className='flex flex-wrap'>
 				{skills.map((skill, index) => (
 					<span
@@ -66,14 +66,14 @@ const SkillsSection = ({ userData, isOwnProfile, onSave }) => {
 							onClick={handleSave}
 							className='mt-4 bg-primary text-white py-2 px-4 rounded hover:bg-primary-dark transition duration-300'
 						>
-							Save Changes
+							Simpan Perubahan
 						</button>
 					) : (
 						<button
 							onClick={() => setIsEditing(true)}
 							className='mt-4 text-primary hover:text-primary-dark transition duration-300'
 						>
-							Edit Skills
+							Ubah Kemampuan
 						</button>
 					)}
 				</>

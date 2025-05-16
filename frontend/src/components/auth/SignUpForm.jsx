@@ -1,11 +1,39 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { axiosInstance } from "../../lib/axios";
 import { toast } from "react-hot-toast";
-
-import Input from "../Input";
-import { Loader, Lock, Mail, User } from "lucide-react";
+import { Loader, Lock, Mail, User, Eye, EyeOff, IdCard } from "lucide-react";
 import PasswordStrengthMeter from "../PasswordStrengthMeter";
+import { useNavigate } from "react-router-dom";
+
+// Letakkan DI LUAR SignUpForm
+const LabeledInput = ({
+  label,
+  icon: Icon,
+  type,
+  value,
+  onChange,
+  required,
+  inputRef,
+}) => (
+  <div className="flex flex-col gap-1">
+    <label className="text-sm font-semibold text-gray-700">{label}</label>
+    <div className="relative">
+      <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
+        <Icon className="h-5 w-5" />
+      </span>
+      <input
+        type={type}
+        value={value}
+        onChange={onChange}
+        required={required}
+        ref={inputRef}
+        className="w-full pl-10 pr-10 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
+      />
+    </div>
+  </div>
+);
+
 
 const SignUpForm = () => {
   const [name, setName] = useState("");
@@ -14,8 +42,15 @@ const SignUpForm = () => {
   const [password, setPassword] = useState("");
   const [nik, setNik] = useState("");
   const [error, setError] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
 
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const nameRef = useRef(null);
+
+  useEffect(() => {
+    nameRef.current?.focus();
+  }, []);
 
   const { mutate: signUpMutation, isLoading } = useMutation({
     mutationFn: async (data) => {
@@ -42,50 +77,75 @@ const SignUpForm = () => {
   };
 
   return (
-    <form onSubmit={handleSignUp} className="flex flex-col gap-1">
-      <Input
+    <form onSubmit={handleSignUp} className="flex flex-col gap-4">
+      <LabeledInput
+        label="Nama Lengkap"
         icon={User}
         type="text"
-        placeholder="Nama Lengkap"
         value={name}
         onChange={(e) => setName(e.target.value)}
         required
+        inputRef={nameRef}
       />
 
-      <Input
-        icon={User}
+      <LabeledInput
+        label="NIK Kamu"
+        icon={IdCard}
         type="text"
-        placeholder="NIK Kamu"
         value={nik}
         onChange={(e) => setNik(e.target.value)}
         required
       />
 
-      <Input
+      <LabeledInput
+        label="Username"
         icon={User}
         type="text"
-        placeholder="Username"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
         required
       />
-      <Input
+
+      <LabeledInput
+        label="Email"
         icon={Mail}
         type="email"
-        placeholder="Email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         required
       />
-      <Input
-        icon={Lock}
-        type="password"
-        placeholder="Kata Sandi (6+ characters)"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        required
-      />
-      {error && <p className="text-red-500 font-semibold mt-2">{error}</p>}
+
+      {/* Password dengan toggle lihat */}
+      <div className="flex flex-col gap-1">
+        <label className="text-sm font-semibold text-gray-700">
+          Kata Sandi (6+ karakter)
+        </label>
+        <div className="relative">
+          <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
+            <Lock className="h-5 w-5" />
+          </span>
+          <input
+            type={showPassword ? "text" : "password"}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            className="w-full pl-10 pr-10 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
+          />
+          <span
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 cursor-pointer"
+          >
+            {showPassword ? (
+              <EyeOff className="h-5 w-5" />
+            ) : (
+              <Eye className="h-5 w-5" />
+            )}
+          </span>
+        </div>
+      </div>
+
+      {error && <p className="text-red-500 font-semibold mt-1">{error}</p>}
+
       <PasswordStrengthMeter password={password} />
 
       <button
@@ -102,4 +162,5 @@ const SignUpForm = () => {
     </form>
   );
 };
+
 export default SignUpForm;

@@ -34,7 +34,7 @@ const LoginPage = () => {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="bg-[#FFFFFF] p-8 rounded-2xl shadow-lg w-full max-w-4xl flex"
+        className="bg-[#FFFFFF] md:p-8 rounded-xl shadow-xl w-full max-w-4xl flex"
       >
         {/* Sembunyikan di Mobile */}
         <div className="relative w-1/2 p-6 flex flex-col justify-center rounded-2xl text-[#3E3E3E] hidden md:flex overflow-hidden">
@@ -59,7 +59,7 @@ const LoginPage = () => {
 
         {/* Form Login */}
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
-          <div className="bg-white py-8 px-4 sm:px-10">
+          <div className="bg-white py-8 md:px-4 px-2 sm:px-10 rounded-lg">
             <LoginForm />
           </div>
           <div className="mt-6 relative text-center">
@@ -71,7 +71,7 @@ const LoginPage = () => {
             </div>
           </div>
 
-          <div className="mt-6 text-center">
+          <div className="m-6 text-center">
             <Link
               to="/Signup"
               className="inline-block py-3 px-6 text-lg font-medium text-white bg-gradient-to-r from-[#2B7A98] to-[#145C75] rounded-lg shadow-lg hover:shadow-xl hover:from-[#145C75] hover:to-[#2B7A98] transition-all duration-300"
