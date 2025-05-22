@@ -68,9 +68,15 @@ const SignUpForm = () => {
 
   const handleSignUp = (e) => {
     e.preventDefault();
+    if (password.length < 6) {
+      setError("Password harus memiliki minimal 6 karakter.");
+      return;
+    }
+
+    setError(null); // clear error jika valid
     try {
       signUpMutation({ name, username, email, password, nik });
-      navigate("/verify-email");
+      // navigate("/verify-email");
     } catch (error) {
       console.log(error);
     }

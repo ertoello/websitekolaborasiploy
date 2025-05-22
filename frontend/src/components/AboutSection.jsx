@@ -3,6 +3,7 @@ import { useQuill } from "react-quilljs";
 import "quill/dist/quill.snow.css";
 
 const AboutSection = ({ userData, isOwnProfile, onSave }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [about, setAbout] = useState(userData.about || "");
   const { quill, quillRef } = useQuill();
@@ -25,29 +26,36 @@ const AboutSection = ({ userData, isOwnProfile, onSave }) => {
   return (
     <>
       <div className="bg-white shadow rounded-lg p-6 mb-6">
-        <h2 className="text-xl font-semibold mb-4">
-        	Tentang Saya
-        </h2>
+        <h2 className="text-xl font-semibold mb-4">Tentang Saya</h2>
 
-        {isOwnProfile ? (
+        {!isExpanded ? (
           <>
             <div
-              className="prose text-gray-700 line-clamp-6 cursor-pointer hover:opacity-90 transition"
-              onClick={() => setIsEditing(true)}
+              className="prose text-gray-700 line-clamp-3"
               dangerouslySetInnerHTML={{ __html: about }}
             />
             <button
-              onClick={() => setIsEditing(true)}
+              onClick={() => setIsExpanded(true)}
               className="mt-3 text-sm text-primary hover:underline transition"
             >
-              Ubah Informasi
+              🔎 Lihat informasi selengkapnya
             </button>
           </>
         ) : (
-          <div
-            className="prose text-gray-700 line-clamp-6"
-            dangerouslySetInnerHTML={{ __html: about }}
-          />
+          <>
+            <div
+              className="prose text-gray-700"
+              dangerouslySetInnerHTML={{ __html: about }}
+            />
+            {isOwnProfile && (
+              <button
+                onClick={() => setIsEditing(true)}
+                className="mt-3 text-sm text-primary hover:underline transition"
+              >
+                ✏️ Ubah Informasi
+              </button>
+            )}
+          </>
         )}
       </div>
 

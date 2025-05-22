@@ -49,8 +49,28 @@ const Post = ({ post }) => {
       toast.error(error.message);
     },
   });
+  
+  const { mutate: deleteComment } = useMutation({
+    mutationFn: async (commentId) => {
+      await axiosInstance.delete(`/posts/${post._id}/comments/${commentId}`);
+    },
+    onSuccess: (data, commentId) => {
+      // Update state local langsung
+      setComments((prev) =>
+        prev.filter((comment) => comment._id !== commentId)
+      );
+
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      toast.success("Komentar berhasil dihapus");
+    },
+    onError: () => {
+      toast.error("Gagal menghapus komentar (referesh browser anda!!!)");
+    },
+  });
+    
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  
 
   const { mutate: createComment, isPending: isAddingComment } = useMutation({
     mutationFn: async (newComment) => {
@@ -77,10 +97,6 @@ const Post = ({ post }) => {
     },
   });
 
-  const handleDeletePost = () => {
-    if (!window.confirm("Are you sure you want to delete this post?")) return;
-    deletePost();
-  };
 
   const handleLikePost = async () => {
     if (isLikingPost) return;
@@ -111,18 +127,19 @@ const Post = ({ post }) => {
     const url = `${window.location.origin}/post/${post._id}`;
 
     if (navigator.share) {
-      // Untuk perangkat mobile
       try {
         await navigator.share({
           title: "Lihat postingan ini!",
           text: "Cek postingan keren ini!",
           url: url,
         });
+        // Tidak perlu feedback jika berhasil atau dibatalkan
       } catch (err) {
-        toast.error("Share dibatalkan atau gagal.");
+        // Jangan tampilkan apapun (asumsikan ini karena user membatalkan share)
+        // Jika kamu ingin log internal (tidak tampil di UI), boleh:
+        console.warn("Share dibatalkan atau error:", err);
       }
     } else {
-      // Untuk desktop
       try {
         await navigator.clipboard.writeText(url);
         toast.success("Link berhasil disalin ke clipboard!");
@@ -130,7 +147,7 @@ const Post = ({ post }) => {
         toast.error("Gagal menyalin link.");
       }
     }
-  };
+  };  
 
   return (
     <div className="bg-secondary rounded-lg shadow mb-4">
@@ -208,34 +225,6 @@ const Post = ({ post }) => {
               </div>
             </div>
           )}
-          {showDeleteModal && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-              <div className="bg-white p-6 rounded-lg shadow-lg w-80">
-                <h2 className="text-lg font-semibold mb-4">Hapus Postingan?</h2>
-                <p className="text-sm text-gray-600 mb-4">
-                  Apakah kamu yakin ingin menghapus postingan ini? Tindakan ini
-                  tidak bisa dibatalkan.
-                </p>
-                <div className="flex justify-end space-x-2">
-                  <button
-                    onClick={() => setShowDeleteModal(false)}
-                    className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 text-sm"
-                  >
-                    Batal
-                  </button>
-                  <button
-                    onClick={() => {
-                      deletePost();
-                      setShowDeleteModal(false);
-                    }}
-                    className="px-4 py-2 rounded bg-red-500 hover:bg-red-600 text-white text-sm"
-                  >
-                    Hapus!
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
         <div
           className="prose max-w-none break-words whitespace-pre-wrap overflow-hidden border border-gray-300 shadow-md hover:shadow-lg p-4 transition-all duration-300 rounded-md"
@@ -278,39 +267,55 @@ const Post = ({ post }) => {
       {showComments && (
         <div className="px-4 pb-4">
           <div className="mb-4 max-h-60 overflow-y-auto">
-            {comments.map((comment) => (
-              <div
-                key={comment._id}
-                className="mb-2 bg-base-100 p-2 rounded flex items-start"
-              >
-                <img
-                  src={comment.user.profilePicture || "/avatar.png"}
-                  alt={comment.user.name}
-                  className="w-8 h-8 rounded-full mr-2 flex-shrink-0"
-                />
-                <div className="flex-grow">
-                  <div className="flex items-center mb-1">
-                    <span className="font-semibold flex items-center gap-1 mr-2">
-                      {comment.user.name}
-                      {comment?.user?.role === "admin" && (
-                        <img
-                          src="/admin.png"
-                          alt="Verified"
-                          className="w-4 h-4 object-contain"
-                        />
-                      )}
-                    </span>
-                    <span className="text-xs text-info">
-                      {formatDistanceToNow(new Date(comment.createdAt), {
-                        addSuffix: true,
-                        locale: id,
-                      })}
-                    </span>
+            {comments.map((comment) => {
+              const isCommentOwner = authUser?._id === comment.user._id;
+
+              return (
+                <div
+                  key={comment._id}
+                  className="mb-2 bg-base-100 p-2 rounded flex items-start justify-between"
+                >
+                  <div className="flex">
+                    <img
+                      src={comment.user.profilePicture || "/avatar.png"}
+                      alt={comment.user.name}
+                      className="w-8 h-8 rounded-full mr-2 flex-shrink-0"
+                    />
+                    <div className="flex-grow">
+                      <div className="flex items-center mb-1">
+                        <span className="font-semibold flex items-center gap-1 mr-2">
+                          {comment.user.name}
+                          {comment?.user?.role === "admin" && (
+                            <img
+                              src="/admin.png"
+                              alt="Verified"
+                              className="w-4 h-4 object-contain"
+                            />
+                          )}
+                        </span>
+                        <span className="text-xs text-info">
+                          {formatDistanceToNow(new Date(comment.createdAt), {
+                            addSuffix: true,
+                            locale: id,
+                          })}
+                        </span>
+                      </div>
+                      <p>{comment.content}</p>
+                    </div>
                   </div>
-                  <p>{comment.content}</p>
+
+                  {isCommentOwner && (
+                    <button
+                      onClick={() => deleteComment(comment._id)}
+                      className="text-red-500 hover:text-red-700 ml-2"
+                      title="Hapus komentar"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  )}
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           <form onSubmit={handleAddComment} className="flex items-center">

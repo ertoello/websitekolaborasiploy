@@ -93,7 +93,7 @@ const ProfilePage = () => {
 
       {/* Mobile View: Toggle Buttons */}
       <div className="block md:hidden space-y-2 my-4">
-        {["about", "experience", "education", "skills"].map((section) => (
+        {["experience", "education", "skills"].map((section) => (
           <div key={section}>
             <button
               onClick={() => toggleSection(section)}
@@ -106,13 +106,6 @@ const ProfilePage = () => {
 
             {activeSection === section && (
               <div className="mt-2 bg-white p-4 rounded shadow">
-                {section === "about" && (
-                  <AboutSection
-                    userData={displayedUser}
-                    isOwnProfile={isOwnProfile}
-                    onSave={updateProfile}
-                  />
-                )}
                 {section === "experience" && (
                   <ExperienceSection
                     userData={displayedUser}
@@ -142,31 +135,37 @@ const ProfilePage = () => {
 
       {/* Desktop View: Grid Layout */}
       <div className="grid grid-cols-12 gap-4 mt-6">
-        {/* Posts Section */}
-        <div className="col-span-12 md:col-span-8 p-0 md:p-2">
-          <h2 className="md:text-2xl text-xl font-bold mb-4 text-center text-gray-800">
-            Postingan {profileUser?.name || profileUser?.username}
-          </h2>
+        {/* Main Content (About + Posts) */}
+        <div className="col-span-12 md:col-span-8 p-0 md:p-2 space-y-6">
+          {/* About Section di tengah */}
+          <AboutSection
+            userData={displayedUser}
+            isOwnProfile={isOwnProfile}
+            onSave={updateProfile}
+          />
 
+          {/* Judul Postingan */}
+          {/* <h2 className="md:text-2xl text-xl font-bold text-center text-gray-800">
+            Postingan {profileUser?.name || profileUser?.username}
+          </h2> */}
+
+          {/* Loading & Error State */}
           {isPostsLoading && (
             <div className="text-center text-blue-500 font-medium animate-pulse">
               Memuat postingan...
             </div>
           )}
-
           {isPostsError && (
             <div className="text-center text-red-500 font-semibold">
               Gagal memuat postingan. Silakan coba lagi nanti.
             </div>
           )}
 
+          {/* Postingan */}
           {!userPosts || userPosts.length === 0 ? (
             <div className="bg-white rounded-xl shadow-md p-6 text-center mt-4">
               <div className="mb-4">
-                <Users
-                  size={48}
-                  className="mx-auto text-blue-400"
-                />
+                <Users size={48} className="mx-auto text-blue-400" />
               </div>
               <h3 className="text-xl font-semibold text-gray-700 mb-2">
                 Belum ada postingan
@@ -180,13 +179,8 @@ const ProfilePage = () => {
           )}
         </div>
 
-        {/* Sidebar for Desktop */}
+        {/* Sidebar - Other Sections */}
         <div className="hidden md:block col-span-4 p-4 rounded shadow space-y-6">
-          <AboutSection
-            userData={displayedUser}
-            isOwnProfile={isOwnProfile}
-            onSave={updateProfile}
-          />
           <ExperienceSection
             userData={displayedUser}
             isOwnProfile={isOwnProfile}

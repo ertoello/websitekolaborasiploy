@@ -16,12 +16,15 @@ const postSchema = new mongoose.Schema(
     },
     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     comments: [
-      {
-        content: { type: String },
-        user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-        createdAt: { type: Date, default: Date.now },
-      },
-    ],
+      new mongoose.Schema(
+        {
+          content: { type: String },
+          user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+          createdAt: { type: Date, default: Date.now },
+        },
+        { _id: true } // ← Ini juga cukup
+      ),
+    ],    
   },
   { timestamps: true }
 );

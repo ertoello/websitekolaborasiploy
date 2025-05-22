@@ -82,3 +82,31 @@ export const sendMessage = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+export const deleteMessage = async (req, res) => {
+  try {
+    const { id: messageId } = req.params;
+    const userId = req.user._id;
+
+    const message = await Message.findById(messageId);
+
+    if (!message) {
+      return res.status(404).json({ error: "Pesan tidak ditemukan" });
+    }
+
+    // Hanya pengirim yang dapat menghapus pesannya
+    if (!message.senderId.equals(userId)) {
+      return res
+        .status(403)
+        .json({ error: "Anda tidak diizinkan menghapus pesan ini" });
+    }
+
+    await message.deleteOne();
+
+    res.status(200).json({ message: "Pesan berhasil dihapus" });
+  } catch (error) {
+    console.error("Error in deleteMessage controller:", error.message);
+    res.status(500).json({ error: "Terjadi kesalahan server" });
+  }
+};
+
