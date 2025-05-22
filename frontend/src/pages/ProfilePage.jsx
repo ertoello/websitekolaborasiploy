@@ -93,7 +93,7 @@ const ProfilePage = () => {
 
       {/* Mobile View: Toggle Buttons */}
       <div className="block md:hidden space-y-2 my-4">
-        {["experience", "education", "skills"].map((section) => (
+        {["pengalaman", "pendidikan", "kemampuan"].map((section) => (
           <div key={section}>
             <button
               onClick={() => toggleSection(section)}
@@ -106,21 +106,21 @@ const ProfilePage = () => {
 
             {activeSection === section && (
               <div className="mt-2 bg-white p-4 rounded shadow">
-                {section === "experience" && (
+                {section === "pengalaman" && (
                   <ExperienceSection
                     userData={displayedUser}
                     isOwnProfile={isOwnProfile}
                     onSave={updateProfile}
                   />
                 )}
-                {section === "education" && (
+                {section === "pendidikan" && (
                   <EducationSection
                     userData={displayedUser}
                     isOwnProfile={isOwnProfile}
                     onSave={updateProfile}
                   />
                 )}
-                {section === "skills" && (
+                {section === "kemampuan" && (
                   <SkillsSection
                     userData={displayedUser}
                     isOwnProfile={isOwnProfile}

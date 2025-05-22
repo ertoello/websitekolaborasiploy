@@ -20,6 +20,27 @@ const ProfileHeader = ({ userData, onSave, isOwnProfile }) => {
 	const queryClient = useQueryClient();
   const navigate = useNavigate();
 
+  const [showConnectionsModal, setShowConnectionsModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [connectionList, setConnectionList] = useState([]);
+
+  const handleConnectionsClick = async (username) => {
+    setIsLoading(true);
+    try {
+      const res = await axiosInstance.get(`/connections/user/${username}`);
+      setConnectionList(res.data);
+      setShowConnectionsModal(true);
+    } catch (err) {
+      console.error("Gagal mengambil koneksi:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const closeModal = () => {
+    setShowConnectionsModal(false);
+  };
+
   const handleGoToMessages = () => {
     navigate(`/messages/${userData._id}`);
   };
@@ -120,7 +141,7 @@ const ProfileHeader = ({ userData, onSave, isOwnProfile }) => {
               Connected
             </div>
             <button
-              className={`${baseClass} bg-[#EF8B8B] hover:bg-red-600 text-sm`}
+              className={`${baseClass} hover:bg-[#EF8B8B] bg-red-600 text-sm`}
               onClick={() => removeConnection(userData._id)}
             >
               <X size={20} className="mr-2" />
@@ -344,29 +365,83 @@ const { mutate: cancelRequest } = useMutation({
         </div>
       </div>
 
-      {/* Bagian Kanan - Konten Tambahan */}
-      <div className="md:col-span-1 bg-white shadow-lg rounded-lg p-5 space-y-4">
-        <h2 className="text-lg font-semibold text-gray-700">
-          Statistika Pengguna
+      {/* Bagian Kanan - Statistika & Aksi */}
+      {/* Sidebar kanan yang mewah dan interaktif */}
+      <div className="md:col-span-1 backdrop-blur-lg bg-white/80 shadow-xl rounded-3xl px-6 py-8 space-y-6 border border-gray-200">
+        <h2 className="text-2xl font-bold text-center text-[#2B7A98]">
+          Statistik Pengguna
         </h2>
-        <div className="flex justify-between items-center p-3 border rounded-md shadow-sm">
-          <span className="text-gray-600">Jumlah Koneksi</span>
-          <span className="font-semibold text-blue-500">
+
+        {/* Koneksi */}
+        <button
+          onClick={() => handleConnectionsClick(userData.username)}
+          className="w-full flex items-center justify-between bg-gradient-to-tr from-white to-blue-50 hover:to-blue-100 transition-all duration-300 border border-blue-200 rounded-2xl px-5 py-4 shadow-sm group"
+        >
+          <div className="flex items-center gap-3 text-gray-700 font-medium group-hover:text-blue-600">
+            Jumlah Koneksi
+          </div>
+          <div className="bg-[#3FA3CE] text-white font-bold text-lg px-4 py-2 rounded-lg shadow-sm inline-block">
             {userData?.connections?.length ?? 0}
-          </span>
-        </div>
-        <div className="flex justify-between items-center p-3 border rounded-md shadow-sm">
-          <span className="text-gray-600">Total Postingan</span>
-          {userPostsData && (
-            <div className="font-semibold text-blue-500">
-              {userPostsData.length}
+          </div>
+        </button>
+
+        {showConnectionsModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center">
+            <div className="relative w-full max-w-xl bg-white rounded-2xl p-4 shadow-2xl animate-scaleIn">
+              <button
+                onClick={closeModal}
+                className="absolute top-4 right-4 text-gray-500 hover:text-black text-3xl"
+              >
+                &times;
+              </button>
+              <h2 className="text-xl font-bold text-gray-800 mb-6">
+                Daftar Koneksi
+              </h2>
+
+              {isLoading ? (
+                <div className="text-center text-gray-600">Memuat...</div>
+              ) : connectionList.length === 0 ? (
+                <div className="text-center text-gray-600">
+                  Belum ada koneksi.
+                </div>
+              ) : (
+                <ul className="divide-y divide-gray-100 max-h-72 overflow-y-auto">
+                  {connectionList.map((conn) => (
+                    <li key={conn._id} className="flex items-center gap-4 py-3">
+                      <img
+                        src={conn.profilePicture || "/avatar.png"}
+                        alt={conn.name}
+                        className="w-12 h-12 rounded-full border"
+                      />
+                      <div>
+                        <p className="font-semibold text-gray-800">
+                          {conn.name}
+                        </p>
+                        <p className="text-sm text-gray-500">{conn.headline}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
-          )}
+          </div>
+        )}
+
+        {/* Total Postingan */}
+        <div className="w-full flex items-center justify-between bg-gradient-to-tr from-white to-indigo-50 border border-indigo-200 rounded-2xl px-5 py-4 shadow-sm">
+          <div className="flex items-center gap-3 text-gray-700 font-medium">
+            Total Postingan
+          </div>
+          <div className="bg-[#3FA3CE] text-white font-bold text-lg px-4 py-2 rounded-lg shadow-sm inline-block">
+            {userPostsData?.length ?? 0}
+          </div>
         </div>
+
+        {/* Tombol Chat */}
         {!isOwnProfile && (
           <button
             onClick={handleGoToMessages}
-            className="bg-[#3FA3CE] text-white p-2 rounded-md"
+            className="w-full bg-[#3FA3CE] hover:bg-[#2B7A98] text-white py-3 font-semibold rounded-2xl shadow-md"
           >
             Chat dengan {userData.name}
           </button>

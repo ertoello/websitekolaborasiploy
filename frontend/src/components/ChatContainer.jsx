@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { axiosInstance } from "../lib/axios";
 import toast from "react-hot-toast";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState} from "react";
 import ChatHeader from "./ChatHeader";
 import MessageInput from "./MessageInput";
 import MessageSkeleton from "./skeletons/MessageSkeleton";
@@ -38,6 +38,7 @@ const ChatContainer = () => {
   } = useChatStore();
 
   const messageEndRef = useRef(null);
+  const [openMenuId, setOpenMenuId] = useState(null);
 
   // Fungsi hapus pesan
   const handleDeleteMessage = async (messageId) => {
@@ -128,8 +129,9 @@ const ChatContainer = () => {
                   {formatMessageTime(message.createdAt)}
                 </time>
               </div>
+
               <div className="relative group">
-                <div className="chat-bubble flex flex-col bg-[#EF8B8B] text-white break-words">
+                <div className="chat-bubble flex flex-col bg-[#EF8B8B] text-white break-words relative">
                   {message.image && (
                     <img
                       src={message.image}
@@ -139,22 +141,43 @@ const ChatContainer = () => {
                   )}
                   {message.text && (
                     <div
-                      className="prose max-w-none break-words whitespace-pre-wrap overflow-hidden"
+                      className="prose max-w-none break-normal whitespace-pre-wrap overflow-visible pr-2"
                       dangerouslySetInnerHTML={{ __html: message.text }}
                     />
                   )}
-                </div>
 
-                {/* Tombol Hapus, hanya muncul jika itu pesan saya */}
-                {isMyMessage && (
-                  <button
-                    onClick={() => handleDeleteMessage(message._id)}
-                    className="absolute top-0 right-0 -mt-3 -mr-3 bg-red-500 hover:bg-red-600 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity"
-                    title="Hapus Pesan"
-                  >
-                    🗑️
-                  </button>
-                )}
+                  {/* Tombol titik tiga */}
+                  {isMyMessage && (
+                    <div className="absolute top-1 right-1">
+                      <button
+                        onClick={() =>
+                          setOpenMenuId(
+                            openMenuId === message._id ? null : message._id
+                          )
+                        }
+                        className="text-white text-lg hover:text-gray-300"
+                        title="Opsi Pesan"
+                      >
+                        ⋮
+                      </button>
+
+                      {/* Menu Dropdown */}
+                      {openMenuId === message._id && (
+                        <div className="absolute right-0 mt-1 bg-white text-black rounded shadow z-10 min-w-[80px]">
+                          <button
+                            onClick={() => {
+                              handleDeleteMessage(message._id);
+                              setOpenMenuId(null); // Tutup menu setelah hapus
+                            }}
+                            className="w-full px-3 py-1 hover:bg-red-100 text-left text-sm"
+                          >
+                            Hapus
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           );

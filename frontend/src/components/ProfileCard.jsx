@@ -57,7 +57,7 @@ export default function ProfileCard({ user, sidebarOpen }) {
           </div>
           <p className="text-info">{user.headline}</p>
           <p
-            className="text-info text-xs cursor-pointer hover:underline mt-1"
+            className="text-white text-sm font-semibold cursor-pointer hover:underline mt-1"
             onClick={() => handleConnectionsClick(user.username)}
           >
             {user.connections.length > 0 ? (
@@ -69,9 +69,9 @@ export default function ProfileCard({ user, sidebarOpen }) {
 
           {/* Daftar Koneksi */}
           {showConnectionsList && (
-            <div className="mt-4 text-left">
-              <h3 className="text-sm font-semibold mb-2">Daftar Koneksi:</h3>
-              <div className="max-h-60 overflow-y-auto border p-2 rounded">
+            <div className="text-left">
+              {/* <h3 className="text-sm font-semibold mb-2">Daftar Koneksi:</h3> */}
+              <div className="max-h-60 overflow-y-auto border p-1 rounded">
                 {connectionList.length > 0 ? (
                   connectionList.map((conn) => (
                     <Link
@@ -105,7 +105,7 @@ export default function ProfileCard({ user, sidebarOpen }) {
                 )}
               </div>
               <button
-                className="mt-3 px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600"
+                className="mt-1 px-2 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600"
                 onClick={() => setShowConnectionsList(false)}
               >
                 Tutup Daftar

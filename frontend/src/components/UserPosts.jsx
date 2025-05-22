@@ -66,6 +66,24 @@ const UserPosts = ({ post }) => {
     },
   });
 
+  const { mutate: deleteComment } = useMutation({
+      mutationFn: async (commentId) => {
+        await axiosInstance.delete(`/posts/${post._id}/comments/${commentId}`);
+      },
+      onSuccess: (data, commentId) => {
+        // Update state local langsung
+        setComments((prev) =>
+          prev.filter((comment) => comment._id !== commentId)
+        );
+  
+        queryClient.invalidateQueries({ queryKey: ["posts"] });
+        toast.success("Komentar berhasil dihapus");
+      },
+      onError: () => {
+        toast.error("Gagal menghapus komentar (referesh browser anda!!!)");
+      },
+    });
+
   const { mutate: likePost, isPending: isLikingPost } = useMutation({
     mutationFn: async () => {
       await axiosInstance.post(`/posts/${post._id}/like`);
@@ -257,39 +275,55 @@ const UserPosts = ({ post }) => {
       {showComments && (
         <div className="px-4 pb-4">
           <div className="mb-4 max-h-60 overflow-y-auto">
-            {comments.map((comment) => (
-              <div
-                key={comment._id}
-                className="mb-2 bg-base-100 p-2 rounded flex items-start"
-              >
-                <img
-                  src={comment.user.profilePicture || "/avatar.png"}
-                  alt={comment.user.name}
-                  className="w-8 h-8 rounded-full mr-2 flex-shrink-0"
-                />
-                <div className="flex-grow">
-                  <div className="flex items-center mb-1">
-                    <span className="flex justify-center items-center gap-2 font-semibold mr-2">
-                      {comment.user.name}
-                      {comment?.user?.role === "admin" && (
-                        <img
-                          src="/admin.png"
-                          alt="Verified"
-                          className="w-4 h-4 object-contain"
-                        />
-                      )}
-                    </span>
-                    <span className="text-xs text-info">
-                      {formatDistanceToNow(new Date(comment.createdAt), {
-                        addSuffix: true,
-                        locale: id,
-                      })}
-                    </span>
+            {comments.map((comment) => {
+              const isCommentOwner = authUser?._id === comment.user._id;
+
+              return (
+                <div
+                  key={comment._id}
+                  className="mb-2 bg-base-100 p-2 rounded flex items-start justify-between"
+                >
+                  <div className="flex">
+                    <img
+                      src={comment.user.profilePicture || "/avatar.png"}
+                      alt={comment.user.name}
+                      className="w-8 h-8 rounded-full mr-2 flex-shrink-0"
+                    />
+                    <div className="flex-grow">
+                      <div className="flex items-center mb-1">
+                        <span className="font-semibold flex items-center gap-1 mr-2">
+                          {comment.user.name}
+                          {comment?.user?.role === "admin" && (
+                            <img
+                              src="/admin.png"
+                              alt="Verified"
+                              className="w-4 h-4 object-contain"
+                            />
+                          )}
+                        </span>
+                        <span className="text-xs text-info">
+                          {formatDistanceToNow(new Date(comment.createdAt), {
+                            addSuffix: true,
+                            locale: id,
+                          })}
+                        </span>
+                      </div>
+                      <p>{comment.content}</p>
+                    </div>
                   </div>
-                  <p>{comment.content}</p>
+
+                  {isCommentOwner && (
+                    <button
+                      onClick={() => deleteComment(comment._id)}
+                      className="text-red-500 hover:text-red-700 ml-2"
+                      title="Hapus komentar"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  )}
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           <form onSubmit={handleAddComment} className="flex items-center">
