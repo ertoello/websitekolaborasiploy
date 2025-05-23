@@ -3,7 +3,7 @@ import { useState, useRef, useEffect, forwardRef } from "react";
 import { axiosInstance } from "../../lib/axios";
 import toast from "react-hot-toast";
 import { User, Lock, Eye, EyeOff, Loader } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate} from "react-router-dom";
 
 // Komponen Input dengan support ref dan icon
 const Input = forwardRef(({ icon: Icon, type, ...props }, ref) => (
@@ -20,12 +20,40 @@ const Input = forwardRef(({ icon: Icon, type, ...props }, ref) => (
   </div>
 ));
 
+const Modal = ({ message, onClose, type = "error" }) => {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
+      <div className="bg-white rounded-lg p-6 w-[90%] max-w-sm shadow-xl">
+        <h2
+          className={`text-xl font-semibold mb-2 ${
+            type === "error" ? "text-red-600" : "text-green-600"
+          }`}
+        >
+          {type === "error" ? "Terjadi Kesalahan" : "Berhasil"}
+        </h2>
+        <p className="text-gray-700">{message}</p>
+        <div className="mt-4 flex justify-end">
+          <button
+            onClick={onClose}
+            className="bg-[#145C75] text-white px-4 py-2 rounded hover:bg-[#2B7A98]"
+          >
+            Tutup
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const LoginForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(null);
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const [modalMessage, setModalMessage] = useState(null);
+  const [modalType, setModalType] = useState("error"); // 'error' or 'success'
 
   // Fokus otomatis ke input username
   const usernameRef = useRef(null);
@@ -35,11 +63,19 @@ const LoginForm = () => {
 
   const { mutate: loginMutation, isLoading } = useMutation({
     mutationFn: (userData) => axiosInstance.post("/auth/login", userData),
-    onSuccess: () => {
+    onSuccess: (res) => {
       queryClient.invalidateQueries({ queryKey: ["authUser"] });
+      setModalType("success");
+      setModalMessage("Login berhasil! Mengarahkan ke halaman utama!");
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
     },
     onError: (err) => {
-      toast.error(err.response?.data?.message || "Something went wrong");
+      setModalType("error");
+      setModalMessage(
+        err.response?.data?.message || "Terjadi kesalahan saat login"
+      );
     },
   });
 
@@ -125,7 +161,8 @@ const LoginForm = () => {
 
         <button
           type="submit"
-          className="w-full p-2 rounded-lg bg-gradient-to-r from-[#3FA3CE] to-[#2B7A98] hover:from-[#2B7A98] hover:to-[#145C75] text-white font-bold text-md tracking-wide uppercase shadow-lg transition duration-300 transform hover:scale-102"
+          className="w-full p-2 flex justify-center items-center rounded-lg bg-gradient-to-r from-[#3FA3CE] to-[#2B7A98] hover:from-[#2B7A98] hover:to-[#145C75] text-white font-bold text-md tracking-wide uppercase shadow-lg transition duration-300 transform hover:scale-102"
+          disabled={isLoading}
         >
           {isLoading ? (
             <Loader className="size-6 animate-spin" />
@@ -134,6 +171,13 @@ const LoginForm = () => {
           )}
         </button>
       </form>
+      {modalMessage && (
+        <Modal
+          message={modalMessage}
+          onClose={() => setModalMessage(null)}
+          type={modalType}
+        />
+      )}
     </div>
   );
 };

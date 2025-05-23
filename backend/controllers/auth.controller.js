@@ -105,13 +105,13 @@ export const signup = async (req, res) => {
 
     const existingUsername = await User.findOne({ username });
     if (existingUsername) {
-      return res.status(400).json({ message: "Username already exists" });
+      return res.status(400).json({ message: "Username Ini Sudah Terdaftar" });
     }
 
     if (password.length < 6) {
       return res
         .status(400)
-        .json({ message: "Password must be at least 6 characters" });
+        .json({ message: "Password Harus Minimal 6 Karakter" });
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -162,7 +162,7 @@ export const signup = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: "User created successfully.",
+      message: "Pengguna SUKSES terdaftar.",
       user: { ...user._doc, password: undefined },
     });
   } catch (error) {
@@ -199,7 +199,6 @@ export const approveUser = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
-
 
 export const verifyEmail = async (req, res) => {
   const { code } = req.body;
@@ -297,7 +296,7 @@ export const login = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: "Logged in successfully",
+      message: "Login Sukses",
       user: {
         _id: user._id,
         name: user.name,

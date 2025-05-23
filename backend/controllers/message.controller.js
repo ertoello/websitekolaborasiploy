@@ -9,13 +9,14 @@ import Notification from "../models/notification.model.js";
 export const getUsersForSidebar = async (req, res) => {
   try {
     const loggedInUserId = req.user._id;
+
     const filteredUsers = await User.find({
       _id: { $ne: loggedInUserId },
     })
       .select(
         "_id name nik username email connections profilePicture lastLogin isVerified isApproved role"
       )
-      .sort({ lastLogin: -1 }); // Urutkan dari lastLogin terbaru ke terlama
+      .sort({ _id: -1 }); // Urutkan berdasarkan waktu pembuatan (paling baru di atas)
 
     res.status(200).json(filteredUsers);
   } catch (error) {

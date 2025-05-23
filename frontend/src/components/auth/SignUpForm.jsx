@@ -34,6 +34,23 @@ const LabeledInput = ({
   </div>
 );
 
+const Modal = ({ isOpen, onClose, title, children }) => {
+  if (!isOpen) return null;
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+      <div className="bg-white rounded-lg shadow-lg max-w-sm w-full p-6 relative">
+        <button
+          className="absolute top-2 right-2 text-gray-500 hover:text-red-500"
+          onClick={onClose}
+        >
+          &times;
+        </button>
+        <h2 className="text-lg font-bold mb-4">{title}</h2>
+        <div>{children}</div>
+      </div>
+    </div>
+  );
+};
 
 const SignUpForm = () => {
   const [name, setName] = useState("");
@@ -47,6 +64,16 @@ const SignUpForm = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const nameRef = useRef(null);
+  const [modalMessage, setModalMessage] = useState("");
+  const [modalTitle, setModalTitle] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const showModal = (title, message) => {
+    setModalTitle(title);
+    setModalMessage(message);
+    setIsModalOpen(true);
+  };
+
 
   useEffect(() => {
     nameRef.current?.focus();
@@ -58,11 +85,14 @@ const SignUpForm = () => {
       return res.data;
     },
     onSuccess: () => {
-      toast.success("Account created successfully");
       queryClient.invalidateQueries({ queryKey: ["authUser"] });
+      navigate("/");
+      showModal(
+        "Berhasil",
+      );
     },
     onError: (err) => {
-      toast.error(err.response.data.message || "Something went wrong");
+      showModal("Gagal", err?.response?.data?.message || "Terjadi kesalahan.");
     },
   });
 
@@ -165,6 +195,13 @@ const SignUpForm = () => {
           "Agree & Join"
         )}
       </button>
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title={modalTitle}
+      >
+        <p>{modalMessage}</p>
+      </Modal>
     </form>
   );
 };

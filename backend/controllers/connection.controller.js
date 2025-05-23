@@ -2,6 +2,7 @@ import { sendConnectionAcceptedEmail } from "../emails/emailHandlers.js";
 import ConnectionRequest from "../models/connectionRequest.model.js";
 import Notification from "../models/notification.model.js";
 import User from "../models/user.model.js";
+import Message from "../models/message.model.js";
 
 // export const sendConnectionRequest = async (req, res) => {
 //   try {
@@ -214,13 +215,54 @@ export const getUserConnections = async (req, res) => {
 
     const user = await User.findById(userId).populate(
       "connections",
-      "name username profilePicture headline connections role"
+      "name username profilePicture headline connections role lastLogin"
     );
 
-    // Urutkan berdasarkan _id (urutan waktu pembuatan, paling baru di atas)
-    const sortedConnections = user.connections.sort(
-      (a, b) => b._id.getTimestamp() - a._id.getTimestamp()
-    );
+    const connectionIds = user.connections.map((c) => c._id);
+
+    // Ambil pesan terakhir dari masing-masing koneksi
+    const latestMessages = await Message.aggregate([
+      {
+        $match: {
+          $or: [
+            { senderId: userId, receiverId: { $in: connectionIds } },
+            { receiverId: userId, senderId: { $in: connectionIds } },
+          ],
+        },
+      },
+      { $sort: { createdAt: -1 } },
+      {
+        $group: {
+          _id: {
+            $cond: [{ $eq: ["$senderId", userId] }, "$receiverId", "$senderId"],
+          },
+          lastMessageAt: { $first: "$createdAt" },
+        },
+      },
+    ]);
+
+    // Buat map dari ID koneksi ke waktu pesan terakhir
+    const messageMap = new Map();
+    latestMessages.forEach((msg) => {
+      messageMap.set(String(msg._id), msg.lastMessageAt);
+    });
+
+    // Urutkan: 1) berdasarkan pesan terakhir, 2) lalu lastLogin jika belum ada pesan
+    const sortedConnections = user.connections.sort((a, b) => {
+      const aMsg = messageMap.get(String(a._id));
+      const bMsg = messageMap.get(String(b._id));
+
+      if (aMsg && bMsg) {
+        return new Date(bMsg) - new Date(aMsg);
+      } else if (aMsg) {
+        return -1; // a punya pesan, b tidak => a duluan
+      } else if (bMsg) {
+        return 1; // b punya pesan, a tidak => b duluan
+      } else {
+        // Keduanya tidak punya pesan => pakai lastLogin
+        return new Date(b.lastLogin) - new Date(a.lastLogin);
+      }
+    });
 
     res.json(sortedConnections);
   } catch (error) {

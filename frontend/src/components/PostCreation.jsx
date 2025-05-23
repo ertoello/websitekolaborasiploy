@@ -7,12 +7,17 @@ import { useQuill } from "react-quilljs";
 import "quill/dist/quill.snow.css";
 import DOMPurify from "dompurify";
 import "../index.css";
+import Modalnotif from "./Modalnotif"; // pastikan path sesuai struktur kamu
+
 
 const PostCreation = ({ user }) => {
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [category, setCategory] = useState("kolaborasi");
   const queryClient = useQueryClient();
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState({ title: "", message: "" });
+
 
   const modules = {
     toolbar: [
@@ -61,11 +66,19 @@ const PostCreation = ({ user }) => {
     },
     onSuccess: () => {
       resetForm();
-      toast.success("Post created successfully");
+      setModalContent({
+        title: "Berhasil",
+        message: "Post berhasil dibuat!",
+      });
+      setModalOpen(true);
       queryClient.invalidateQueries({ queryKey: ["posts"] });
     },
     onError: (err) => {
-      toast.error(err.response?.data?.message || "Failed to create post");
+      setModalContent({
+        title: "Gagal",
+        message: err.response?.data?.message || "Gagal membuat postingan.",
+      });
+      setModalOpen(true);
     },
   });
 
@@ -205,6 +218,12 @@ const PostCreation = ({ user }) => {
           {isPending ? <Loader className="size-5 animate-spin" /> : "Share"}
         </button>
       </div>
+      <Modalnotif
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        title={modalContent.title}
+        message={modalContent.message}
+      />
     </div>
   );
 };

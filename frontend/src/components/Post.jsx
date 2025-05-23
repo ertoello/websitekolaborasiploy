@@ -13,8 +13,7 @@ import {
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { id } from "date-fns/locale";
-
-
+import Modalnotif from "./Modalnotif"; // pastikan path sesuai struktur kamu
 import PostAction from "./PostAction";
 // import DOMPurify from "dompurify";
 
@@ -34,8 +33,10 @@ const Post = ({ post }) => {
   const [comments, setComments] = useState(post.comments || []);
   const isOwner = authUser?._id === post.author._id;
   const isLiked = post.likes.includes(authUser?._id);
-
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState({ title: "", message: "" });
   const queryClient = useQueryClient();
+  const [selectedCommentId, setSelectedCommentId] = useState(null);
 
   const { mutate: deletePost, isPending: isDeletingPost } = useMutation({
     mutationFn: async () => {
@@ -43,10 +44,19 @@ const Post = ({ post }) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["posts"] });
-      toast.success("Post deleted successfully");
+      setModalContent({
+        title: "Berhasil",
+        message: "Postingan Berhasil Dihapus!",
+      });
+      setModalOpen(true);
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
     },
     onError: (error) => {
-      toast.error(error.message);
+      setModalContent({
+        title: "Gagal",
+        message: err.response?.data?.message || "Gagal Hapus postingan.",
+      });
+      setModalOpen(true);
     },
   });
   
@@ -61,14 +71,18 @@ const Post = ({ post }) => {
       );
 
       queryClient.invalidateQueries({ queryKey: ["posts"] });
-      toast.success("Komentar berhasil dihapus");
+      setModalContent({
+        title: "Berhasil",
+        message: "Komentar Berhasil Dihapus!",
+      });
+      setModalOpen(true);
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
     },
     onError: () => {
       toast.error("Gagal menghapus komentar (referesh browser anda!!!)");
     },
   });
     
-
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   
 
@@ -80,10 +94,19 @@ const Post = ({ post }) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["posts"] });
-      toast.success("Comment added successfully");
+      setModalContent({
+        title: "Berhasil",
+        message: "Komentar Berhasil Ditambahkan!",
+      });
+      setModalOpen(true);
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
     },
     onError: (err) => {
-      toast.error(err.response.data.message || "Failed to add comment");
+      setModalContent({
+        title: "Gagal",
+        message: err.response?.data?.message || "Gagal Menambah Komentar.",
+      });
+      setModalOpen(true);
     },
   });
 
@@ -281,37 +304,44 @@ const Post = ({ post }) => {
                       alt={comment.user.name}
                       className="w-8 h-8 rounded-full mr-2 flex-shrink-0"
                     />
-                    <div className="flex-grow">
-                      <div className="flex items-center mb-1">
-                        <span className="font-semibold flex items-center gap-1 mr-2">
-                          {comment.user.name}
-                          {comment?.user?.role === "admin" && (
-                            <img
-                              src="/admin.png"
-                              alt="Verified"
-                              className="w-4 h-4 object-contain"
-                            />
-                          )}
-                        </span>
-                        <span className="text-xs text-info">
-                          {formatDistanceToNow(new Date(comment.createdAt), {
-                            addSuffix: true,
-                            locale: id,
-                          })}
-                        </span>
-                      </div>
-                      <p>{comment.content}</p>
+                    <div>
+                      <p className="font-semibold">{comment.user.name}</p>
+                      <p className="text-sm text-gray-700">{comment.content}</p>
+                      <p className="text-xs text-gray-400">
+                        {formatDistanceToNow(new Date(comment.createdAt), {
+                          addSuffix: true,
+                          locale: id,
+                        })}
+                      </p>
                     </div>
                   </div>
 
                   {isCommentOwner && (
-                    <button
-                      onClick={() => deleteComment(comment._id)}
-                      className="text-red-500 hover:text-red-700 ml-2"
-                      title="Hapus komentar"
-                    >
-                      <Trash2 size={16} />
-                    </button>
+                    <div className="relative ml-2">
+                      <button
+                        onClick={() =>
+                          setSelectedCommentId(
+                            selectedCommentId === comment._id
+                              ? null
+                              : comment._id
+                          )
+                        }
+                        className="text-gray-900 hover:text-black"
+                      >
+                        &#8942; {/* Unicode untuk tiga titik vertikal */}
+                      </button>
+
+                      {selectedCommentId === comment._id && (
+                        <div className="absolute right-0 mt-2 bg-white border border-gray-300 rounded shadow-lg z-10">
+                          <button
+                            onClick={() => deleteComment(comment._id)}
+                            className="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100 w-full text-left"
+                          >
+                            Hapus
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   )}
                 </div>
               );
@@ -341,6 +371,12 @@ const Post = ({ post }) => {
           </form>
         </div>
       )}
+      <Modalnotif
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        title={modalContent.title}
+        message={modalContent.message}
+      />
     </div>
   );
 };

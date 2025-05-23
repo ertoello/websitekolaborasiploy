@@ -20,6 +20,10 @@ const ProfileHeader = ({ userData, onSave, isOwnProfile }) => {
 	const queryClient = useQueryClient();
   const navigate = useNavigate();
 
+  const [showRemoveConfirm, setShowRemoveConfirm] = useState(false);
+  const [pendingRemoveUserId, setPendingRemoveUserId] = useState(null);
+
+
   const [showConnectionsModal, setShowConnectionsModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [connectionList, setConnectionList] = useState([]);
@@ -142,11 +146,47 @@ const ProfileHeader = ({ userData, onSave, isOwnProfile }) => {
             </div>
             <button
               className={`${baseClass} hover:bg-[#EF8B8B] bg-red-600 text-sm`}
-              onClick={() => removeConnection(userData._id)}
+              onClick={() => {
+                setPendingRemoveUserId(userData._id);
+                setShowRemoveConfirm(true);
+              }}
             >
               <X size={20} className="mr-2" />
-              Remove Connection
+              Hapus Koneksi
             </button>
+            {showRemoveConfirm && (
+              <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+                <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-lg">
+                  <h2 className="text-lg font-semibold mb-4">
+                    Konfirmasi Penghapusan
+                  </h2>
+                  <p className="mb-6">
+                    Apakah Anda yakin ingin menghapus koneksi ini?
+                  </p>
+                  <div className="flex justify-end space-x-4">
+                    <button
+                      onClick={() => {
+                        setShowRemoveConfirm(false);
+                        setPendingRemoveUserId(null);
+                      }}
+                      className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                    >
+                      Batal
+                    </button>
+                    <button
+                      onClick={() => {
+                        removeConnection(pendingRemoveUserId);
+                        setShowRemoveConfirm(false);
+                        setPendingRemoveUserId(null);
+                      }}
+                      className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                    >
+                      Hapus
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         );
       case "pending":
@@ -345,10 +385,10 @@ useEffect(() => {
                     value={editedData.headline ?? userData.headline}
                     onChange={handleHeadlineChange}
                     className="text-gray-600 w-full pr-20 text-center"
-                    placeholder="Masukkan headline (Profesi Anda)"
+                    placeholder="headline atau profesi"
                   />
                   <div className="absolute right-2 top-1/2 transform -translate-y-1/2 text-sm text-gray-400 select-none pointer-events-none">
-                    Max 20 Karakter | tersisa: {charsLeft}
+                    {charsLeft} / {MAX_LENGTH}
                   </div>
                 </div>
               ) : (
