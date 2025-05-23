@@ -3,24 +3,25 @@ import cloudinary from "../lib/cloudinary.js";
 
 export const getSuggestedConnections = async (req, res) => {
   try {
-    const { page = 1, limit = 7 } = req.query; // Ambil query parameter, default page=1, limit=7
+    const { page = 1, limit = 7 } = req.query;
     const currentUser = await User.findById(req.user._id).select("connections");
 
     const suggestedUsers = await User.find({
       _id: { $ne: req.user._id, $nin: currentUser.connections },
     })
       .select("name username profilePicture headline role")
-      .skip((page - 1) * limit) // Lompat data sesuai halaman
-      .limit(Number(limit)); // Ambil hanya 'limit' data
+      .sort({ createdAt: -1 }) // urutkan berdasarkan createdAt terbaru
+      .skip((page - 1) * limit)
+      .limit(Number(limit));
 
     const totalUsers = await User.countDocuments({
       _id: { $ne: req.user._id, $nin: currentUser.connections },
-    }); // Hitung total data
+    });
 
     res.json({
       users: suggestedUsers,
-      totalUsers, // Kirim total pengguna
-      totalPages: Math.ceil(totalUsers / limit), // Hitung total halaman
+      totalUsers,
+      totalPages: Math.ceil(totalUsers / limit),
       currentPage: Number(page),
     });
   } catch (error) {

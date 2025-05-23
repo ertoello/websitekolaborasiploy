@@ -3,6 +3,71 @@ import ConnectionRequest from "../models/connectionRequest.model.js";
 import Notification from "../models/notification.model.js";
 import User from "../models/user.model.js";
 
+// export const sendConnectionRequest = async (req, res) => {
+//   try {
+//     const { userId } = req.params;
+//     const senderId = req.user._id;
+
+//     // Tidak boleh mengirim permintaan ke diri sendiri
+//     if (senderId.toString() === userId) {
+//       return res
+//         .status(400)
+//         .json({ message: "You can't send a request to yourself" });
+//     }
+
+//     // Jika sudah terhubung, tolak permintaan
+//     if (req.user.connections.includes(userId)) {
+//       return res.status(400).json({ message: "You are already connected" });
+//     }
+
+//     // Jika pengguna yang login memiliki role "admin", langsung terima koneksi
+//     if (req.user.role === "admin") {
+//       await User.findByIdAndUpdate(senderId, {
+//         $addToSet: { connections: userId },
+//       });
+//       await User.findByIdAndUpdate(userId, {
+//         $addToSet: { connections: senderId },
+//       });
+
+//       const notification = new Notification({
+//         recipient: userId,
+//         type: "connectionAccepted",
+//         relatedUser: senderId,
+//       });
+//       await notification.save();
+
+//       return res
+//         .status(201)
+//         .json({ message: "Connection instantly accepted by admin" });
+//     }
+
+//     // Jika bukan "admin", lakukan permintaan koneksi seperti biasa
+//     const existingRequest = await ConnectionRequest.findOne({
+//       sender: senderId,
+//       recipient: userId,
+//       status: "pending",
+//     });
+
+//     if (existingRequest) {
+//       return res
+//         .status(400)
+//         .json({ message: "A connection request already exists" });
+//     }
+
+//     const newRequest = new ConnectionRequest({
+//       sender: senderId,
+//       recipient: userId,
+//     });
+
+//     await newRequest.save();
+
+//     res.status(201).json({ message: "Connection request sent successfully" });
+//   } catch (error) {
+//     console.error("Error in sendConnectionRequest controller:", error);
+//     res.status(500).json({ message: "Server error" });
+//   }
+// };
+
 export const sendConnectionRequest = async (req, res) => {
   try {
     const { userId } = req.params;
@@ -10,9 +75,7 @@ export const sendConnectionRequest = async (req, res) => {
 
     // Tidak boleh mengirim permintaan ke diri sendiri
     if (senderId.toString() === userId) {
-      return res
-        .status(400)
-        .json({ message: "You can't send a request to yourself" });
+      return res.status(400).json({ message: "You can't connect to yourself" });
     }
 
     // Jika sudah terhubung, tolak permintaan
@@ -20,54 +83,29 @@ export const sendConnectionRequest = async (req, res) => {
       return res.status(400).json({ message: "You are already connected" });
     }
 
-    // Jika pengguna yang login memiliki role "admin", langsung terima koneksi
-    if (req.user.role === "admin") {
-      await User.findByIdAndUpdate(senderId, {
-        $addToSet: { connections: userId },
-      });
-      await User.findByIdAndUpdate(userId, {
-        $addToSet: { connections: senderId },
-      });
-
-      const notification = new Notification({
-        recipient: userId,
-        type: "connectionAccepted",
-        relatedUser: senderId,
-      });
-      await notification.save();
-
-      return res
-        .status(201)
-        .json({ message: "Connection instantly accepted by admin" });
-    }
-
-    // Jika bukan "admin", lakukan permintaan koneksi seperti biasa
-    const existingRequest = await ConnectionRequest.findOne({
-      sender: senderId,
-      recipient: userId,
-      status: "pending",
+    // Langsung tambahkan koneksi dua arah tanpa request
+    await User.findByIdAndUpdate(senderId, {
+      $addToSet: { connections: userId },
     });
 
-    if (existingRequest) {
-      return res
-        .status(400)
-        .json({ message: "A connection request already exists" });
-    }
-
-    const newRequest = new ConnectionRequest({
-      sender: senderId,
-      recipient: userId,
+    await User.findByIdAndUpdate(userId, {
+      $addToSet: { connections: senderId },
     });
 
-    await newRequest.save();
+    // Opsional: buat notifikasi untuk user yang terhubung
+    const notification = new Notification({
+      recipient: userId,
+      type: "connectionAccepted",
+      relatedUser: senderId,
+    });
+    await notification.save();
 
-    res.status(201).json({ message: "Connection request sent successfully" });
+    return res.status(201).json({ message: "Connection accepted instantly" });
   } catch (error) {
     console.error("Error in sendConnectionRequest controller:", error);
     res.status(500).json({ message: "Server error" });
   }
 };
-
 
 export const acceptConnectionRequest = async (req, res) => {
 	try {
@@ -150,35 +188,45 @@ export const rejectConnectionRequest = async (req, res) => {
 };
 
 export const getConnectionRequests = async (req, res) => {
-	try {
-		const userId = req.user._id;
+  try {
+    const userId = req.user._id;
 
-		const requests = await ConnectionRequest.find({ recipient: userId, status: "pending" }).populate(
-			"sender",
-			"name username profilePicture headline connections role"
-		);
+    const requests = await ConnectionRequest.find({
+      recipient: userId,
+      status: "pending",
+    })
+      .sort({ createdAt: -1 }) // ← Tambahkan sorting agar urut dari yang terbaru
+      .populate(
+        "sender",
+        "name username profilePicture headline connections role"
+      );
 
-		res.json(requests);
-	} catch (error) {
-		console.error("Error in getConnectionRequests controller:", error);
-		res.status(500).json({ message: "Server error" });
-	}
+    res.json(requests);
+  } catch (error) {
+    console.error("Error in getConnectionRequests controller:", error);
+    res.status(500).json({ message: "Server error" });
+  }
 };
 
 export const getUserConnections = async (req, res) => {
-	try {
-		const userId = req.user._id;
+  try {
+    const userId = req.user._id;
 
-		const user = await User.findById(userId).populate(
-			"connections",
-			"name username profilePicture headline connections role"
-		);
+    const user = await User.findById(userId).populate(
+      "connections",
+      "name username profilePicture headline connections role"
+    );
 
-		res.json(user.connections);
-	} catch (error) {
-		console.error("Error in getUserConnections controller:", error);
-		res.status(500).json({ message: "Server error" });
-	}
+    // Urutkan berdasarkan _id (urutan waktu pembuatan, paling baru di atas)
+    const sortedConnections = user.connections.sort(
+      (a, b) => b._id.getTimestamp() - a._id.getTimestamp()
+    );
+
+    res.json(sortedConnections);
+  } catch (error) {
+    console.error("Error in getUserConnections controller:", error);
+    res.status(500).json({ message: "Server error" });
+  }
 };
 
 export const removeConnection = async (req, res) => {

@@ -11,9 +11,11 @@ export const getUsersForSidebar = async (req, res) => {
     const loggedInUserId = req.user._id;
     const filteredUsers = await User.find({
       _id: { $ne: loggedInUserId },
-    }).select(
-      "_id name nik username email connections profilePicture lastLogin isVerified isApproved role"
-    );
+    })
+      .select(
+        "_id name nik username email connections profilePicture lastLogin isVerified isApproved role"
+      )
+      .sort({ lastLogin: -1 }); // Urutkan dari lastLogin terbaru ke terlama
 
     res.status(200).json(filteredUsers);
   } catch (error) {
@@ -21,6 +23,7 @@ export const getUsersForSidebar = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
 export const getMessages = async (req, res) => {
   try {
     const { id: userToChatId } = req.params;

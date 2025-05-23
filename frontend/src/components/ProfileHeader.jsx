@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { axiosInstance } from "../lib/axios";
 import { toast } from "react-hot-toast";
 
@@ -231,6 +231,35 @@ const { mutate: cancelRequest } = useMutation({
   },
 });
 
+const truncateHeadline = (text, maxLength = MAX_LENGTH) => {
+  if (!text) return "";
+  if (text.length <= maxLength) return text;
+  return text.slice(0, maxLength) + "...";
+};
+
+const MAX_LENGTH = 20;
+
+const handleHeadlineChange = (e) => {
+  const inputValue = e.target.value;
+
+  if (inputValue.length <= MAX_LENGTH) {
+    setEditedData({ ...editedData, headline: inputValue });
+    setCharsLeft(MAX_LENGTH - inputValue.length);
+  }
+  // kalau lebih dari 20 huruf, abaikan input atau bisa kasih pesan error (opsional)
+};
+
+const [charsLeft, setCharsLeft] = useState(MAX_LENGTH);
+
+useEffect(() => {
+  if (editedData.headline) {
+    setCharsLeft(MAX_LENGTH - editedData.headline.length);
+  } else if (userData.headline) {
+    setCharsLeft(MAX_LENGTH - userData.headline.length);
+  } else {
+    setCharsLeft(MAX_LENGTH);
+  }
+}, [editedData.headline, userData.headline]);
 
 	return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-2 shadow-xl">
@@ -310,16 +339,22 @@ const { mutate: cancelRequest } = useMutation({
               )}
 
               {isEditing ? (
-                <input
-                  type="text"
-                  value={editedData.headline ?? userData.headline}
-                  onChange={(e) =>
-                    setEditedData({ ...editedData, headline: e.target.value })
-                  }
-                  className="text-gray-600 text-center w-full"
-                />
+                <div className="relative w-full">
+                  <input
+                    type="text"
+                    value={editedData.headline ?? userData.headline}
+                    onChange={handleHeadlineChange}
+                    className="text-gray-600 w-full pr-20 text-center"
+                    placeholder="Masukkan headline (Profesi Anda)"
+                  />
+                  <div className="absolute right-2 top-1/2 transform -translate-y-1/2 text-sm text-gray-400 select-none pointer-events-none">
+                    Max 20 Karakter | tersisa: {charsLeft}
+                  </div>
+                </div>
               ) : (
-                <p className="text-gray-600">{userData.headline}</p>
+                <p className="text-gray-600">
+                  {truncateHeadline(userData.headline, 20)}
+                </p>
               )}
 
               <div className="flex justify-center items-center mt-2">
@@ -414,9 +449,17 @@ const { mutate: cancelRequest } = useMutation({
                         className="w-12 h-12 rounded-full border"
                       />
                       <div>
-                        <p className="font-semibold text-gray-800">
-                          {conn.name}
-                        </p>
+                        <div className="flex items-center gap-2">
+                          <p className="font-medium text-sm">{conn.name}</p>
+                          {conn?.role === "admin" && (
+                            <img
+                              src="/admin.png"
+                              alt="Admin Badge"
+                              className="w-4 h-4 object-contain"
+                              title="Admin"
+                            />
+                          )}
+                        </div>
                         <p className="text-sm text-gray-500">{conn.headline}</p>
                       </div>
                     </li>
