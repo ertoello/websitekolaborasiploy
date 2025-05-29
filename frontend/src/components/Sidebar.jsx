@@ -29,7 +29,7 @@ export default function Sidebar({ user, onLogout }) {
       <nav className="border-t border-[#D7D7D7]">
         <ul>
           <NavItem
-            to="/"
+            to="/postingan"
             icon={
               <img
                 src="/pengumuman.png"

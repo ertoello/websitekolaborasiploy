@@ -62,7 +62,11 @@ function AppContent() {
         <LoadingModal />
         <Routes>
           <Route
-            path="/"
+            path="*"
+            element={<Navigate to={authUser ? "/messages" : "/dashboard"} />}
+        />
+          <Route
+            path="/postingan"
             element={authUser ? <HomePage /> : <Navigate to="/dashboard" />}
           />
           <Route

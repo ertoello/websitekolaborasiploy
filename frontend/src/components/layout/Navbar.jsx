@@ -153,7 +153,7 @@ const Navbar = () => {
                       </span>
                     )}
                   </div>
-                  <Link to="/" className="nav-icon">
+                  <Link to="/postingan" className="nav-icon">
                     <img
                       src="/pengumuman.png"
                       alt="Home Icon"
