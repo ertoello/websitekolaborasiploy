@@ -15,7 +15,7 @@ import MobileBottomNavbar from "../components/MobileBottomNavbar";
 const HomePage = () => {
   const [page, setPage] = useState(1); // State untuk halaman saat ini
   const limit = 7; // Jumlah pengguna per halaman
-  const [category, setCategory] = useState("all");
+  const [category, setCategory] = useState("penting");
   const queryClient = useQueryClient();
   const [isLeftSidebarOpen, setIsLeftSidebarOpen] = useState(false);
   const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(false);

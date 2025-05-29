@@ -30,10 +30,17 @@ export default function Sidebar({ user, onLogout }) {
         <ul>
           <NavItem
             to="/"
-            icon={<Home size={18} />}
-            label="Home"
+            icon={
+              <img
+                src="/pengumuman.png"
+                alt="Home Icon"
+                className="w-5 h-5 object-cover"
+              />
+            }
+            label="Pengumuman Dari Pengurus Desa"
             sidebarOpen={sidebarOpen}
           />
+
           <NavItem
             to="/network"
             icon={<UserPlus size={18} />}

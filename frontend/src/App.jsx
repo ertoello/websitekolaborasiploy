@@ -67,25 +67,31 @@ function AppContent() {
           />
           <Route
             path="/dashboard"
-            element={!authUser ? <DashboardPage /> : <Navigate to="/" />}
+            element={
+              !authUser ? <DashboardPage /> : <Navigate to="/messages" />
+            }
           />
           <Route
             path="/signup"
-            element={!authUser ? <SignUpPage /> : <Navigate to="/" />}
+            element={!authUser ? <SignUpPage /> : <Navigate to="/messages" />}
           />
           <Route
             path="/login"
-            element={!authUser ? <LoginPage /> : <Navigate to="/" />}
+            element={!authUser ? <LoginPage /> : <Navigate to="/messages" />}
           />
           <Route path="/verify-email" element={<EmailVerificationPage />} />
           <Route path="/waiting-approval" element={<WaitingApprovalPage />} />
           <Route
             path="/forgot-password"
-            element={!authUser ? <ForgotPasswordPage /> : <Navigate to="/" />}
+            element={
+              !authUser ? <ForgotPasswordPage /> : <Navigate to="/messages" />
+            }
           />
           <Route
             path="/reset-password/:token"
-            element={!authUser ? <ResetPasswordPage /> : <Navigate to="/" />}
+            element={
+              !authUser ? <ResetPasswordPage /> : <Navigate to="/messages" />
+            }
           />
           <Route
             path="/notifications"
@@ -111,7 +117,9 @@ function AppContent() {
           />
           <Route
             path="/messages/:id"
-            element={authUser ? <MessagesProfil /> : <Navigate to="/dashboard" />}
+            element={
+              authUser ? <MessagesProfil /> : <Navigate to="/dashboard" />
+            }
           />
           <Route
             path="/dashboardadmin"

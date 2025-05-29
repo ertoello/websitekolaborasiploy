@@ -68,7 +68,7 @@ const LoginForm = () => {
       setModalType("success");
       setModalMessage("Login berhasil! Mengarahkan ke halaman utama!");
       setTimeout(() => {
-        navigate("/");
+        navigate("/messages");
       }, 2000);
     },
     onError: (err) => {

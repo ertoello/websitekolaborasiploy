@@ -20,7 +20,7 @@ const WaitingApprovalPage = () => {
           pengurus desa. Kami akan menghubungi kamu setelah proses selesai.
         </p>
         <button
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/messages")}
           className="bg-[#3FA3CE] text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:bg-[#2B7A98] transition duration-300"
         >
           Kembali ke Beranda

@@ -51,6 +51,18 @@ const MobileNavbar = ({
         </div>
 
         <div className="p-4 flex flex-col space-y-6">
+          <Link
+            to="/messages"
+            className="flex items-center gap-2"
+            onClick={() => setIsOpen(false)}
+          >
+            <MessageCircle size={24} /> Forum Diskusi
+            {unreadMessagesCount > 0 && (
+              <span className="bg-red-500 text-white text-xs rounded-full px-2 ml-2">
+                {unreadMessagesCount}
+              </span>
+            )}
+          </Link>
           {/* Link Dashboard Admin (hanya untuk admin) */}
           {authUser?.role === "admin" && (
             <Link
@@ -73,18 +85,7 @@ const MobileNavbar = ({
               </span>
             )}
           </Link>
-          <Link
-            to="/messages"
-            className="flex items-center gap-2"
-            onClick={() => setIsOpen(false)}
-          >
-            <MessageCircle size={24} /> Forum Diskusi
-            {unreadMessagesCount > 0 && (
-              <span className="bg-red-500 text-white text-xs rounded-full px-2 ml-2">
-                {unreadMessagesCount}
-              </span>
-            )}
-          </Link>
+
           <Link
             to="/notifications"
             className="flex items-center gap-2 relative"

@@ -2,24 +2,30 @@ import { MessageSquare } from "lucide-react";
 
 const NoChatSelected = () => {
   return (
-    <div className="w-full flex flex-1 flex-col items-center justify-center p-16 bg-[#E6E6FA]/50">
+    <div className="w-full flex flex-1 flex-col items-center justify-center p-16 bg-gradient-to-br from-indigo-100 to-purple-100">
       <div className="max-w-md text-center space-y-6">
         {/* Icon Display */}
-        <div className="flex justify-center gap-4 mb-4">
+        <div className="flex justify-center mb-4">
           <div className="relative">
             <div
-              className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center
-             justify-center animate-bounce"
+              className="w-20 h-20 rounded-full bg-[#3FA3CE] flex items-center
+             justify-center animate-pulse shadow-lg"
             >
-              <MessageSquare className="w-8 h-8 text-primary " />
+              <MessageSquare className="w-10 h-10 text-indigo-600" />
             </div>
           </div>
         </div>
 
-        {/* Welcome Text */}
-        <h2 className="text-2xl font-bold">Welcome to Chatty!</h2>
-        <p className="text-base-content/60">
-          Select a conversation from the sidebar to start chatting
+        {/* Headline */}
+        <h2 className="text-xl md:text-4xl font-extrabold text-[#3FA3CE]">
+          Media Komunikasi Interaktif Desa
+        </h2>
+
+        {/* Deskripsi */}
+        <p className="text-gray-700 text-lg">
+          Sambungkan diri Anda dengan warga desa melalui platform komunikasi
+          modern yang interaktif, cepat, dan mudah digunakan. Mulailah
+          percakapan dari sidebar untuk menjalin hubungan lebih erat!
         </p>
       </div>
     </div>

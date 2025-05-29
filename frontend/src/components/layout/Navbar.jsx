@@ -143,17 +143,6 @@ const Navbar = () => {
 
                 {/* Ikon Navigasi */}
                 <div className="items-center gap-4 hidden md:flex">
-                  <Link to="/" className="nav-icon">
-                    <Home size={26} />
-                  </Link>
-                  <Link to="/network" className="nav-icon relative">
-                    <Users size={26} />
-                    {unreadConnectionRequestsCount > 0 && (
-                      <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-2 py-1">
-                        {unreadConnectionRequestsCount}
-                      </span>
-                    )}
-                  </Link>
                   <div className="relative">
                     <Link to="/messages" className="nav-icon">
                       <MessageCircle size={26} />
@@ -164,6 +153,23 @@ const Navbar = () => {
                       </span>
                     )}
                   </div>
+                  <Link to="/" className="nav-icon">
+                    <img
+                      src="/pengumuman.png"
+                      alt="Home Icon"
+                      className="w-7 h-7 object-cover"
+                    />
+                  </Link>
+
+                  <Link to="/network" className="nav-icon relative">
+                    <Users size={26} />
+                    {unreadConnectionRequestsCount > 0 && (
+                      <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-2 py-1">
+                        {unreadConnectionRequestsCount}
+                      </span>
+                    )}
+                  </Link>
+
                   <div className="relative">
                     <Link to="/notifications" className="nav-icon">
                       <Bell size={26} />
@@ -197,8 +203,8 @@ const Navbar = () => {
                     </span>
                   </Link>
                 )}
-                <Link to="/" className="nav-icon block md:hidden">
-                  <Home size={26} />
+                <Link to="/messages" className="nav-icon block md:hidden">
+                  <MessageCircle size={26} />
                 </Link>
                 <MobileNavbar
                   authUser={authUser}

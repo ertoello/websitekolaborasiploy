@@ -180,8 +180,8 @@ const PostCreation = ({ user }) => {
             value={category}
             onChange={(e) => setCategory(e.target.value)}
           >
-            <option value="kolaborasi">Kolaborasi</option>
-            <option value="penting">Penting</option>
+            <option value="kolaborasi">Post Info Biasa</option>
+            <option value="penting">Post Info Penting</option>
           </select>
         </div>
       )}

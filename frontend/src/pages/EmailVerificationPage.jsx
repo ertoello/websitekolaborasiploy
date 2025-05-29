@@ -26,7 +26,7 @@ const EmailVerificationPage = () => {
         navigate("/waiting-approval");
       } else {
         // Jika akun sudah disetujui, arahkan ke halaman utama
-        navigate("/");
+        navigate("/messages");
       }
     },
     onError: (err) => {
