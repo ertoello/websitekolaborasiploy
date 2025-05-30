@@ -131,7 +131,7 @@ const ChatContainer = () => {
               </div>
 
               <div className="relative group">
-                <div className="chat-bubble flex flex-col bg-[#EF8B8B] text-white break-words relative">
+                <div className="chat-bubble flex flex-col bg-[#c7e3f0] text-white break-words relative">
                   {message.image && (
                     <img
                       src={message.image}

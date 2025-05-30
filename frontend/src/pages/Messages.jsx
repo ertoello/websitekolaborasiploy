@@ -87,7 +87,7 @@ const MessagesContent = () => {
         <ChevronRight className="w-7 h-7 text-gray-800" />
       </button>
 
-      <div className="relative w-full max-w-6xl h-full flex border md:border-white bg-[#E6E6FA] rounded-3xl md:shadow-2xl overflow-hidden">
+      <div className="relative w-full max-w-6xl h-full flex border md:border-[#c7e3f0] bg-gray-100 rounded-3xl md:shadow-2xl overflow-hidden">
         <SidebarChat
           isSidebarOpen={isSidebarOpen}
           setSidebarOpen={setSidebarOpen}

@@ -87,7 +87,7 @@ const SidebarChat = ({ isSidebarOpen, setSidebarOpen }) => {
   return (
     <aside
       className={`
-    fixed top-16 left-0 h-[calc(100%-4rem)] w-full bg-gray-400 z-40
+    fixed top-16 left-0 h-[calc(100%-4rem)] w-full bg-white z-40
     transform transition-transform duration-300 ease-in-out
     ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
     lg:relative lg:top-0 lg:h-full lg:translate-x-0 lg:w-72
@@ -128,10 +128,10 @@ const SidebarChat = ({ isSidebarOpen, setSidebarOpen }) => {
             }}
             className={`
                 w-full p-3 flex items-center gap-3
-                hover:bg-[#A8A8A8] transition-colors
+                hover:bg-[#98b7c4] transition-colors
                 ${
                   selectedUser?._id === user._id
-                    ? "bg-[#828282] ring-1 ring-base-300"
+                    ? "bg-[#c7e3f0] ring-1 ring-base-300"
                     : ""
                 }
               `}
@@ -156,17 +156,17 @@ const SidebarChat = ({ isSidebarOpen, setSidebarOpen }) => {
             <div className="block text-left min-w-0">
               <div className="font-medium truncate text-[#145C75] text-sm sm:text-base">
                 <div className="flex items-center justify-center gap-2">
-                {user.name}
-                {user?.role === "admin" && (
-                  <img
-                    src="/admin.png"
-                    alt="Verified"
-                    className="w-5 h-5 object-contain"
-                  />
-                )}
+                  {user.name}
+                  {user?.role === "admin" && (
+                    <img
+                      src="/admin.png"
+                      alt="Verified"
+                      className="w-5 h-5 object-contain"
+                    />
+                  )}
                 </div>
               </div>
-              <div className="text-xs text-green-200 sm:text-sm">
+              <div className="text-xs text-green-600 sm:text-sm">
                 {onlineUsers.includes(user._id) ? "Online" : "Offline"}
               </div>
             </div>

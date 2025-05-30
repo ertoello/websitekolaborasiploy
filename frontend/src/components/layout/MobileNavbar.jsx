@@ -7,6 +7,7 @@ const MobileNavbar = ({
   unreadNotificationCount,
   unreadConnectionRequestsCount,
   unreadMessagesCount,
+  unreadCounts,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -18,12 +19,16 @@ const MobileNavbar = ({
           <Menu size={28} />
           {(unreadNotificationCount > 0 ||
             unreadConnectionRequestsCount > 0 ||
-            unreadMessagesCount > 0) && (
+            unreadCounts > 0
+            // unreadMessagesCount > 0
+          ) && (
             <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1.5">
               {/* Jumlah total semua notif */}
               {(Number(unreadNotificationCount) || 0) +
                 (Number(unreadConnectionRequestsCount) || 0) +
-                (Number(unreadMessagesCount) || 0)}
+                (Number(unreadCounts) || 0)
+                // (Number(unreadMessagesCount) || 0)
+                }
             </span>
           )}
         </button>
@@ -52,6 +57,24 @@ const MobileNavbar = ({
 
         <div className="p-4 flex flex-col space-y-6">
           <Link
+            to="/postingan"
+            className="flex items-center gap-2"
+            onClick={() => setIsOpen(false)}
+          >
+            <img
+              src="/pengumuman.png"
+              alt="Pengumuman"
+              className="w-6 h-6 object-cover rounded"
+            />
+            Pengumuman Pemerintah Desa
+            {unreadCounts > 0 && (
+              <span className="bg-red-500 text-white text-xs rounded-full px-2 ml-2">
+                {unreadCounts}
+              </span>
+            )}
+          </Link>
+
+          {/* <Link
             to="/messages"
             className="flex items-center gap-2"
             onClick={() => setIsOpen(false)}
@@ -62,7 +85,7 @@ const MobileNavbar = ({
                 {unreadMessagesCount}
               </span>
             )}
-          </Link>
+          </Link> */}
           {/* Link Dashboard Admin (hanya untuk admin) */}
           {authUser?.role === "admin" && (
             <Link

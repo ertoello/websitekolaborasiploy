@@ -70,6 +70,16 @@ const Navbar = () => {
     enabled: !!authUser,
   });
 
+  const { data: unreadCounts } = useQuery({
+    queryKey: ["unreadPostCounts"],
+    queryFn: async () => {
+      const res = await axiosInstance.get(
+        "/notifications/notif/count-unread-posts"
+      );
+      return res.data;
+    },
+  });
+
   const allowedTypes = ["like", "comment", "connectionAccepted"];
 
   const unreadNotificationCount = notifications?.data?.filter(
@@ -153,13 +163,20 @@ const Navbar = () => {
                       </span>
                     )}
                   </div>
-                  <Link to="/postingan" className="nav-icon">
-                    <img
-                      src="/pengumuman.png"
-                      alt="Home Icon"
-                      className="w-7 h-7 object-cover"
-                    />
-                  </Link>
+                  <div className="relative">
+                    <Link to="/postingan" className="nav-icon">
+                      <img
+                        src="/pengumuman.png"
+                        alt="Home Icon"
+                        className="w-7 h-7 object-cover"
+                      />
+                      {unreadCounts?.penting > 0 && (
+                        <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-2 py-1">
+                          {unreadCounts.penting}
+                        </span>
+                      )}
+                    </Link>
+                  </div>
 
                   <Link to="/network" className="nav-icon relative">
                     <Users size={26} />
@@ -203,14 +220,22 @@ const Navbar = () => {
                     </span>
                   </Link>
                 )}
-                <Link to="/messages" className="nav-icon block md:hidden">
-                  <MessageCircle size={26} />
-                </Link>
+                <div className="relative block md:hidden">
+                  <Link to="/messages" className="nav-icon">
+                    <MessageCircle size={26} />
+                  </Link>
+                  {unreadMessagesCount?.count > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-2 py-1">
+                      {unreadMessagesCount.count}
+                    </span>
+                  )}
+                </div>
                 <MobileNavbar
                   authUser={authUser}
                   unreadNotificationCount={unreadNotificationCount}
                   unreadConnectionRequestsCount={unreadConnectionRequestsCount}
                   unreadMessagesCount={unreadMessagesCount?.count}
+                  unreadCounts={unreadCounts?.penting}
                 />
                 {/* Profile icon: tampil hanya di desktop */}
                 <Link
