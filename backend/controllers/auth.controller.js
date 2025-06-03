@@ -123,7 +123,7 @@ export const signup = async (req, res) => {
       password: hashedPassword,
       username,
       nik,
-      isApproved: true,
+      isApproved: false,
       isVerified: true, // ✅ Langsung dianggap sudah diverifikasi
       verificationToken: null,
       verificationTokenExpiresAt: null,

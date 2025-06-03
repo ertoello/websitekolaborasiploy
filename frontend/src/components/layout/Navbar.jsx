@@ -154,7 +154,7 @@ const Navbar = () => {
                 {/* Ikon Navigasi */}
                 <div className="items-center gap-4 hidden md:flex">
                   <div className="relative">
-                    <Link to="/messages" className="nav-icon">
+                    <Link to="/messages" className="nav-icon" title="Fitur Komunikasi" >
                       <MessageCircle size={26} />
                     </Link>
                     {unreadMessagesCount?.count > 0 && (
@@ -164,7 +164,7 @@ const Navbar = () => {
                     )}
                   </div>
                   <div className="relative">
-                    <Link to="/postingan" className="nav-icon">
+                    <Link to="/postingan" className="nav-icon" title="Pengumuman Pemerintah Desa">
                       <img
                         src="/pengumuman.png"
                         alt="Home Icon"
@@ -178,7 +178,7 @@ const Navbar = () => {
                     </Link>
                   </div>
 
-                  <Link to="/network" className="nav-icon relative">
+                  <Link to="/network" className="nav-icon relative" title="Managemen Koneksi">
                     <Users size={26} />
                     {unreadConnectionRequestsCount > 0 && (
                       <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-2 py-1">
@@ -188,7 +188,7 @@ const Navbar = () => {
                   </Link>
 
                   <div className="relative">
-                    <Link to="/notifications" className="nav-icon">
+                    <Link to="/notifications" className="nav-icon" title="Notifikasi">
                       <Bell size={26} />
                     </Link>
                     {unreadNotificationCount > 0 && (
@@ -221,7 +221,7 @@ const Navbar = () => {
                   </Link>
                 )}
                 <div className="relative block md:hidden">
-                  <Link to="/messages" className="nav-icon">
+                  <Link to="/messages" className="nav-icon" title="Fitur Komunikasi">
                     <MessageCircle size={26} />
                   </Link>
                   {unreadMessagesCount?.count > 0 && (

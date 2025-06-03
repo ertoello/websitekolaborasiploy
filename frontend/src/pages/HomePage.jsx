@@ -10,7 +10,7 @@ import VerifiedUsers from "../components/VerifiedUsers";
 import TermsAndConditions from "../components/TermsAndConditions";
 import CategoryFilter from "../components/CategoryFilter";
 import MobileBottomNavbar from "../components/MobileBottomNavbar";
-
+import { InView } from "react-intersection-observer";
 
 const HomePage = () => {
   const [page, setPage] = useState(1); // State untuk halaman saat ini
@@ -20,8 +20,7 @@ const HomePage = () => {
   const [isLeftSidebarOpen, setIsLeftSidebarOpen] = useState(false);
   const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(false);
   const [showMobilePost, setShowMobilePost] = useState(false);
-
-
+  const [visibleCount, setVisibleCount] = useState(5);
 
   const { data: authUser } = useQuery({
     queryKey: ["authUser"],
@@ -112,7 +111,7 @@ const HomePage = () => {
           markCategoryAsRead={markCategoryAsRead}
         />
 
-        {posts?.map((post) => (
+        {posts.slice(0, visibleCount).map((post) => (
           <Post key={post._id} post={post} />
         ))}
 
@@ -133,6 +132,24 @@ const HomePage = () => {
             </p>
           </div>
         )}
+
+        {visibleCount < posts.length && (
+          <InView
+            onChange={(inView) => {
+              if (inView) {
+                setVisibleCount((prev) => prev + 5); // Tambah 5 post lagi
+              }
+            }}
+          >
+            {({ ref }) => (
+              <div ref={ref} className="h-10 flex justify-center items-center">
+                <span className="text-gray-500 text-sm animate-pulse">
+                  Memuat lebih banyak...
+                </span>
+              </div>
+            )}
+          </InView>
+        )}
       </div>
 
       <div className="lg:col-span-3 hidden lg:block">
@@ -151,44 +168,46 @@ const HomePage = () => {
             </p>
           )}
 
-          <div className="flex justify-center mt-6 gap-x-1">
-            <button
-              className={`px-3 py-1 text-sm rounded-md transition-all ${
-                page === 1
-                  ? "bg-gray-300 text-gray-600 cursor-not-allowed"
-                  : "bg-blue-600 text-white hover:bg-blue-700 shadow-sm"
-              }`}
-              onClick={() => setPage(page - 1)}
-              disabled={page === 1}
-            >
-              ← Prev
-            </button>
-
-            {[...Array(totalPages)].map((_, index) => (
+          <div className="overflow-x-auto">
+            <div className="flex justify-center mt-6 gap-x-1 w-max">
               <button
-                key={index}
-                className={`px-3 py-1 text-sm rounded-md transition-all shadow-sm ${
-                  page === index + 1
-                    ? "bg-blue-700 text-white font-semibold"
-                    : "bg-blue-500 text-white hover:bg-blue-600"
+                className={`px-3 py-1 text-sm rounded-md transition-all ${
+                  page === 1
+                    ? "bg-gray-300 text-gray-600 cursor-not-allowed"
+                    : "bg-blue-600 text-white hover:bg-blue-700 shadow-sm"
                 }`}
-                onClick={() => setPage(index + 1)}
+                onClick={() => setPage(page - 1)}
+                disabled={page === 1}
               >
-                {index + 1}
+                ← Prev
               </button>
-            ))}
 
-            <button
-              className={`px-3 py-1 text-sm rounded-md transition-all ${
-                page === totalPages
-                  ? "bg-gray-300 text-gray-600 cursor-not-allowed"
-                  : "bg-blue-600 text-white hover:bg-blue-700 shadow-sm"
-              }`}
-              onClick={() => setPage(page + 1)}
-              disabled={page === totalPages}
-            >
-              Next →
-            </button>
+              {[...Array(totalPages)].map((_, index) => (
+                <button
+                  key={index}
+                  className={`px-3 py-1 text-sm rounded-md transition-all shadow-sm ${
+                    page === index + 1
+                      ? "bg-blue-700 text-white font-semibold"
+                      : "bg-blue-500 text-white hover:bg-blue-600"
+                  }`}
+                  onClick={() => setPage(index + 1)}
+                >
+                  {index + 1}
+                </button>
+              ))}
+
+              <button
+                className={`px-3 py-1 text-sm rounded-md transition-all ${
+                  page === totalPages
+                    ? "bg-gray-300 text-gray-600 cursor-not-allowed"
+                    : "bg-blue-600 text-white hover:bg-blue-700 shadow-sm"
+                }`}
+                onClick={() => setPage(page + 1)}
+                disabled={page === totalPages}
+              >
+                Next →
+              </button>
+            </div>
           </div>
         </div>
         <VerifiedUsers authUser={authUser} allUsers={allUsers} />

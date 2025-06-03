@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useQuill } from "react-quilljs";
 import "quill/dist/quill.snow.css";
 
@@ -6,13 +6,29 @@ const AboutSection = ({ userData, isOwnProfile, onSave }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [about, setAbout] = useState(userData.about || "");
+  const [shouldShowExpand, setShouldShowExpand] = useState(false);
   const { quill, quillRef } = useQuill();
+  const contentRef = useRef(null);
 
+  // Set editor content saat mulai edit
   useEffect(() => {
     if (quill && isEditing) {
       quill.root.innerHTML = about;
     }
   }, [quill, isEditing]);
+
+  // Deteksi apakah isi lebih dari 3 baris
+  useEffect(() => {
+    if (contentRef.current) {
+      const el = contentRef.current;
+      const lineHeight = parseFloat(getComputedStyle(el).lineHeight) || 24;
+      const maxLines = 3;
+      const threshold = lineHeight * maxLines;
+
+      // Jika konten lebih tinggi dari 3 baris, tampilkan tombol
+      setShouldShowExpand(el.scrollHeight > threshold);
+    }
+  }, [about]);
 
   const handleSave = () => {
     if (quill) {
@@ -31,15 +47,18 @@ const AboutSection = ({ userData, isOwnProfile, onSave }) => {
         {!isExpanded ? (
           <>
             <div
+              ref={contentRef}
               className="prose text-gray-700 line-clamp-3"
               dangerouslySetInnerHTML={{ __html: about }}
             />
-            <button
-              onClick={() => setIsExpanded(true)}
-              className="mt-3 text-sm text-primary hover:underline transition"
-            >
-              🔎 Lihat informasi selengkapnya
-            </button>
+            {shouldShowExpand && (
+              <button
+                onClick={() => setIsExpanded(true)}
+                className="mt-3 text-sm text-primary hover:underline transition"
+              >
+                🔎 Lihat informasi selengkapnya
+              </button>
+            )}
           </>
         ) : (
           <>
@@ -59,7 +78,7 @@ const AboutSection = ({ userData, isOwnProfile, onSave }) => {
         )}
       </div>
 
-      {/* Fullscreen Editor Modal */}
+      {/* Modal Editor */}
       {isEditing && (
         <div className="fixed inset-0 z-[100] bg-black/30 backdrop-blur-md flex items-center justify-center p-4">
           <div className="bg-white w-full max-w-6xl rounded-3xl shadow-2xl p-8 relative animate-scale-in border border-gray-200">

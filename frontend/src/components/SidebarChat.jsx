@@ -154,19 +154,26 @@ const SidebarChat = ({ isSidebarOpen, setSidebarOpen }) => {
             </div>
 
             <div className="block text-left min-w-0">
-              <div className="font-medium truncate text-[#145C75] text-sm sm:text-base">
-                <div className="flex items-center justify-center gap-2">
-                  {user.name}
+              <div className="font-medium text-[#145C75] text-base sm:max-h-[3.5rem] overflow-y-auto pr-1">
+                <div className="flex items-start gap-2 whitespace-pre-wrap break-words leading-snug">
+                  <span className="block">{user.name}</span>
                   {user?.role === "admin" && (
                     <img
                       src="/admin.png"
                       alt="Verified"
-                      className="w-5 h-5 object-contain"
+                      className="w-5 h-5 object-contain shrink-0"
                     />
                   )}
                 </div>
               </div>
-              <div className="text-xs text-green-600 sm:text-sm">
+
+              <div
+                className={`text-sm ${
+                  onlineUsers.includes(user._id)
+                    ? "text-white"
+                    : "text-gray-300"
+                }`}
+              >
                 {onlineUsers.includes(user._id) ? "Online" : "Offline"}
               </div>
             </div>

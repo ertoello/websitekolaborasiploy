@@ -70,7 +70,7 @@ const SidebarChatProfil = ({ isSidebarOpen, setSidebarOpen }) => {
   return (
     <aside
       className={`
-        fixed top-16 left-0 h-[calc(100%-4rem)] w-full bg-gray-400 z-40
+        fixed top-16 left-0 h-[calc(100%-4rem)] w-full bg-white z-40
         transform transition-transform duration-300 ease-in-out
         ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
         lg:relative lg:top-0 lg:h-full lg:translate-x-0 lg:w-72
@@ -91,10 +91,10 @@ const SidebarChatProfil = ({ isSidebarOpen, setSidebarOpen }) => {
             <button
               key={user._id}
               onClick={() => handleSelectUser(user)}
-              className={`w-full px-6 py-5 flex flex-col items-center text-center gap-3 hover:bg-[#A8A8A8] transition-colors
+              className={`w-full px-6 py-5 flex flex-col items-center text-center gap-3 hover:bg-[#98b7c4] transition-colors
           ${
             selectedUser?._id === user._id
-              ? "bg-[#828282] ring-1 ring-base-300"
+              ? "bg-[#c7e3f0] ring-1 ring-base-300"
               : ""
           }
         `}
@@ -119,7 +119,7 @@ const SidebarChatProfil = ({ isSidebarOpen, setSidebarOpen }) => {
 
               {/* Nama dan status */}
               <div className="min-w-0">
-                <div className="font-semibold text-base text-[#145C75] truncate w-32">
+                <div className="font-semibold text-base text-[#145C75] max-w-xs mx-auto break-words whitespace-normal text-center">
                   <div className="flex items-center justify-center gap-2">
                     {user.name}
                     {user?.role === "admin" && (
@@ -134,7 +134,7 @@ const SidebarChatProfil = ({ isSidebarOpen, setSidebarOpen }) => {
                 <div
                   className={`text-sm ${
                     onlineUsers.includes(user._id)
-                      ? "text-green-200"
+                      ? "text-white"
                       : "text-gray-300"
                   }`}
                 >

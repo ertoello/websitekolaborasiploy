@@ -101,7 +101,7 @@ const MobileNavbar = ({
             className="flex items-center gap-2 relative"
             onClick={() => setIsOpen(false)}
           >
-            <Users size={24} /> Daftar Koneksi Anda
+            <Users size={24} /> Managemen Koneksi
             {unreadConnectionRequestsCount > 0 && (
               <span className="bg-red-500 text-white text-xs rounded-full px-2 ml-2">
                 {unreadConnectionRequestsCount}
