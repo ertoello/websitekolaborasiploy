@@ -105,13 +105,13 @@ export const signup = async (req, res) => {
 
     const existingUsername = await User.findOne({ username });
     if (existingUsername) {
-      return res.status(400).json({ message: "Username Ini Sudah Terdaftar" });
+      return res.status(400).json({ message: "Username ini sudah terdaftar" });
     }
 
     if (password.length < 6) {
       return res
         .status(400)
-        .json({ message: "Password Harus Minimal 6 Karakter" });
+        .json({ message: "Password harus minimal 6 karakter" });
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -123,8 +123,8 @@ export const signup = async (req, res) => {
       password: hashedPassword,
       username,
       nik,
-      isApproved: false,
-      isVerified: true, // ✅ Langsung dianggap sudah diverifikasi
+      isApproved: false, // ⛔ belum disetujui
+      isVerified: true, // ✅ atau bisa false, tergantung kebutuhanmu
       verificationToken: null,
       verificationTokenExpiresAt: null,
       connections: [],
@@ -132,7 +132,7 @@ export const signup = async (req, res) => {
 
     await user.save();
 
-    // 🔁 Tambahkan koneksi otomatis ke semua admin
+    // Tambahkan koneksi otomatis ke semua admin
     const adminUsers = await User.find({ role: "admin" });
 
     if (adminUsers.length > 0) {
@@ -149,25 +149,17 @@ export const signup = async (req, res) => {
       await user.save();
     }
 
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "3d",
-    });
+    // ❌ JANGAN kirim JWT di sini!
 
-    res.cookie("jwt-linkedin", token, {
-      httpOnly: true,
-      maxAge: 3 * 24 * 60 * 60 * 1000,
-      secure: true, // harus true di production (HTTPS)
-      sameSite: "None", // agar bisa cross-origin
-    });
-
-    res.status(201).json({
+    return res.status(201).json({
       success: true,
-      message: "Pengguna SUKSES terdaftar.",
+      message:
+        "Akun berhasil dibuat. Silakan tunggu persetujuan admin sebelum login.",
       user: { ...user._doc, password: undefined },
     });
   } catch (error) {
-    console.error("Error in signup: ", error.message);
-    res.status(500).json({ message: "Internal server error" });
+    console.error("Error in signup:", error.message);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 

@@ -36,9 +36,19 @@ export const createPost = async (req, res) => {
   try {
     const { content, image, category } = req.body;
 
+    let uploadedImageUrl = null;
+
+    // Jika ada gambar, upload ke Cloudinary
+    if (image) {
+      const uploadResult = await cloudinary.uploader.upload(image, {
+        folder: "posts",
+      });
+      uploadedImageUrl = uploadResult.secure_url;
+    }
+
     const newPost = new Post({
       content,
-      image,
+      image: uploadedImageUrl, // simpan URL dari Cloudinary
       category,
       author: req.user._id,
     });
@@ -55,7 +65,7 @@ export const createPost = async (req, res) => {
     console.error("Error creating post:", error);
     res.status(500).json({ message: "Server error" });
   }
-};
+};  
 
 export const deletePost = async (req, res) => {
 	try {

@@ -18,7 +18,9 @@ const VerifiedUsers = ({ authUser, allUsers }) => {
         <p className="text-sm text-[#525252] text-center mb-3">
           Total:{" "}
           <span className="font-semibold text-[#3FA3CE]">
-            {allUsers?.length || "Error"}
+            {allUsers?.filter(
+              (user) => user.role !== "admin" && user.isApproved === true
+            ).length || "0"}
           </span>{" "}
           Users
         </p>
@@ -32,47 +34,41 @@ const VerifiedUsers = ({ authUser, allUsers }) => {
 
         {/* 🔥 List of Users */}
         <div className="space-y-2">
-          {allUsers?.map((user) => (
-            <div
-              key={user._id}
-              className="flex items-center gap-3 bg-[#F4F4F4] p-2 rounded-lg shadow-sm hover:shadow-md transition cursor-pointer"
-              onClick={() => navigate(`/profile/${user.username}`)}
-            >
-              {/* 🔹 Profile Picture */}
-              <img
-                src={user.profilePicture || "/avatar.png"}
-                alt={user.username}
-                className="w-10 h-10 rounded-full border border-[#A8A8A8] hover:scale-105 transition"
-              />
-
-              {/* 🔹 User Details */}
-              <div className="flex-1">
-                <div className="flex items-center gap-2">
-                  <p className="text-md font-semibold text-[#2B7A98] leading-tight">
-                    {user.name}
+          {allUsers
+            ?.filter(
+              (user) => user.role !== "admin" && user.isApproved === true
+            )
+            .slice(0, 7)
+            .map((user) => (
+              <div
+                key={user._id}
+                className="flex items-center gap-3 bg-[#F4F4F4] p-2 rounded-lg shadow-sm hover:shadow-md transition cursor-pointer"
+                onClick={() => navigate(`/profile/${user.username}`)}
+              >
+                <img
+                  src={user.profilePicture || "/avatar.png"}
+                  alt={user.username}
+                  className="w-10 h-10 rounded-full border border-[#A8A8A8] hover:scale-105 transition"
+                />
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <p className="text-md font-semibold text-[#2B7A98] leading-tight">
+                      {user.name}
+                    </p>
+                  </div>
+                  <p className="text-sm text-[#3E3E3E] flex items-center gap-1 leading-tight">
+                    <User size={14} /> {user.username}
                   </p>
-                  {user?.role === "admin" && (
-                    <img
-                      src="/admin.png"
-                      alt="Verified"
-                      className="w-5 h-5 object-contain"
-                    />
-                  )}
+                  <p className="text-sm text-[#828282] leading-tight">
+                    {user.connections.length > 0 ? (
+                      <span>{user.connections.length} Koneksi</span>
+                    ) : (
+                      <span className="text-[#CCCCCC]">Belum Ada Koneksi</span>
+                    )}
+                  </p>
                 </div>
-
-                <p className="text-sm text-[#3E3E3E] flex items-center gap-1 leading-tight">
-                  <User size={14} /> {user.username}
-                </p>
-                <p className="text-sm text-[#828282] leading-tight">
-                  {user.connections.length > 0 ? (
-                    <span>{user.connections.length} Koneksi</span>
-                  ) : (
-                    <span className="text-[#CCCCCC]">Belum Ada Koneksi</span>
-                  )}
-                </p>
               </div>
-            </div>
-          ))}
+            ))}
         </div>
       </div>
     </div>

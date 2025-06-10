@@ -86,7 +86,7 @@ const SignUpForm = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["authUser"] });
-      navigate("/");
+      navigate("/waiting-approval");
       showModal(
         "Berhasil",
       );

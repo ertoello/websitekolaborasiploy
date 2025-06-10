@@ -20,7 +20,7 @@ const Input = forwardRef(({ icon: Icon, type, ...props }, ref) => (
   </div>
 ));
 
-const Modal = ({ message, onClose, type = "error" }) => {
+const Modal = ({ message, type = "error" }) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
       <div className="bg-white rounded-lg p-6 w-[90%] max-w-sm shadow-xl">
@@ -32,14 +32,6 @@ const Modal = ({ message, onClose, type = "error" }) => {
           {type === "error" ? "Terjadi Kesalahan" : "Berhasil"}
         </h2>
         <p className="text-gray-700">{message}</p>
-        <div className="mt-4 flex justify-end">
-          <button
-            onClick={onClose}
-            className="bg-[#145C75] text-white px-4 py-2 rounded hover:bg-[#2B7A98]"
-          >
-            Tutup
-          </button>
-        </div>
       </div>
     </div>
   );
@@ -83,6 +75,17 @@ const LoginForm = () => {
     e.preventDefault();
     loginMutation({ username, password });
   };
+
+  useEffect(() => {
+    if (modalMessage) {
+      const timer = setTimeout(() => {
+        setModalMessage(null);
+      }, 1000); // Modal akan otomatis hilang dalam 3 detik
+
+      return () => clearTimeout(timer); // Bersihkan timeout jika komponen unmount
+    }
+  }, [modalMessage]);
+  
 
   return (
     <div className="bg-white shadow-2xl rounded-3xl p-5 md:p-10 w-full max-w-lg border border-[#D7D7D7]">
