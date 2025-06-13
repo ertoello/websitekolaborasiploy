@@ -11,7 +11,7 @@ const postSchema = new mongoose.Schema(
     image: { type: String },
     category: {
       type: String,
-      enum: ["kolaborasi", "penting"],
+      enum: ["kolaborasi", "penting", "keuangan"],
       default: "kolaborasi", // ← ini bagian default-nya
     },
     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],

@@ -14,7 +14,7 @@ export const getUsersForSidebar = async (req, res) => {
       _id: { $ne: loggedInUserId },
     })
       .select(
-        "_id name nik username email connections profilePicture lastLogin isVerified isApproved role"
+        "_id name nik username email connections profilePicture lastLogin isVerified isApproved role fotoKTP"
       )
       .sort({ _id: -1 }); // Urutkan berdasarkan waktu pembuatan (paling baru di atas)
 

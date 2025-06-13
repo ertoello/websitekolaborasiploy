@@ -89,6 +89,9 @@ const Navbar = () => {
 
   const unreadConnectionRequestsCount = connectionRequests?.data?.length;
   const location = useLocation();
+  const totalUnreadPosts =
+    (unreadCounts?.penting || 0) + (unreadCounts?.keuangan || 0);
+
 
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50 border-b border-gray-200">
@@ -154,7 +157,11 @@ const Navbar = () => {
                 {/* Ikon Navigasi */}
                 <div className="items-center gap-4 hidden md:flex">
                   <div className="relative">
-                    <Link to="/messages" className="nav-icon" title="Fitur Komunikasi" >
+                    <Link
+                      to="/messages"
+                      className="nav-icon"
+                      title="Fitur Komunikasi"
+                    >
                       <MessageCircle size={26} />
                     </Link>
                     {unreadMessagesCount?.count > 0 && (
@@ -164,21 +171,31 @@ const Navbar = () => {
                     )}
                   </div>
                   <div className="relative">
-                    <Link to="/postingan" className="nav-icon" title="Pengumuman Pemerintah Desa">
+                    <Link
+                      to="/postingan"
+                      className="nav-icon"
+                      title="Pengumuman Pemerintah Desa"
+                    >
                       <img
                         src="/pengumuman.png"
                         alt="Home Icon"
                         className="w-7 h-7 object-cover"
                       />
-                      {unreadCounts?.penting > 0 && (
+                      {(unreadCounts?.penting || 0) +
+                        (unreadCounts?.keuangan || 0) >
+                        0 && (
                         <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-2 py-1">
-                          {unreadCounts.penting}
+                          {(unreadCounts?.penting || 0) +
+                            (unreadCounts?.keuangan || 0)}
                         </span>
                       )}
                     </Link>
                   </div>
-
-                  <Link to="/network" className="nav-icon relative" title="Managemen Koneksi">
+                  <Link
+                    to="/network"
+                    className="nav-icon relative"
+                    title="Managemen Koneksi"
+                  >
                     <Users size={26} />
                     {unreadConnectionRequestsCount > 0 && (
                       <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-2 py-1">
@@ -188,7 +205,11 @@ const Navbar = () => {
                   </Link>
 
                   <div className="relative">
-                    <Link to="/notifications" className="nav-icon" title="Notifikasi">
+                    <Link
+                      to="/notifications"
+                      className="nav-icon"
+                      title="Notifikasi"
+                    >
                       <Bell size={26} />
                     </Link>
                     {unreadNotificationCount > 0 && (
@@ -221,7 +242,11 @@ const Navbar = () => {
                   </Link>
                 )}
                 <div className="relative block md:hidden">
-                  <Link to="/messages" className="nav-icon" title="Fitur Komunikasi">
+                  <Link
+                    to="/messages"
+                    className="nav-icon"
+                    title="Fitur Komunikasi"
+                  >
                     <MessageCircle size={26} />
                   </Link>
                   {unreadMessagesCount?.count > 0 && (
@@ -235,7 +260,7 @@ const Navbar = () => {
                   unreadNotificationCount={unreadNotificationCount}
                   unreadConnectionRequestsCount={unreadConnectionRequestsCount}
                   unreadMessagesCount={unreadMessagesCount?.count}
-                  unreadCounts={unreadCounts?.penting}
+                  unreadCounts={totalUnreadPosts}
                 />
                 {/* Profile icon: tampil hanya di desktop */}
                 <Link

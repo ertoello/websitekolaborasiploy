@@ -182,6 +182,8 @@ const PostCreation = ({ user }) => {
           >
             <option value="kolaborasi">Post Info Biasa</option>
             <option value="penting">Post Pengumuman Pemerintah Desa</option>
+            <option value="keuangan">Post Informasi Keuangan</option>{" "}
+            {/* ← Tambahan ini */}
           </select>
         </div>
       )}

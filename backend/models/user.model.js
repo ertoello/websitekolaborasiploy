@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema(
     password: { type: String, required: true },
     lastLogin: { type: Date, default: Date.now },
     role: { type: String, default: "user" },
+    fotoKTP: { type: String },
     isVerified: { type: Boolean, default: false },
     isApproved: { type: Boolean, default: false },
     resetPasswordToken: String,

@@ -9,7 +9,7 @@ export const getSuggestedConnections = async (req, res) => {
     const suggestedUsers = await User.find({
       _id: { $ne: req.user._id, $nin: currentUser.connections },
     })
-      .select("name username profilePicture headline role")
+      .select("name username profilePicture headline role fotoKTP")
       .sort({ createdAt: -1 }) // urutkan berdasarkan createdAt terbaru
       .skip((page - 1) * limit)
       .limit(Number(limit));
@@ -49,17 +49,18 @@ export const getPublicProfile = async (req, res) => {
 export const updateProfile = async (req, res) => {
 	try {
 		const allowedFields = [
-			"name",
-			"username",
-			"headline",
-			"about",
-			"location",
-			"profilePicture",
-			"bannerImg",
-			"skills",
-			"experience",
-			"education",
-		];
+      "name",
+      "username",
+      "headline",
+      "about",
+      "location",
+      "profilePicture",
+      "bannerImg",
+      "skills",
+      "experience",
+      "education",
+      "fotoKTP",
+    ];
 
 		const updatedData = {};
 
@@ -79,6 +80,11 @@ export const updateProfile = async (req, res) => {
 			updatedData.bannerImg = result.secure_url;
 		}
 
+    if (req.body.fotoKTP) {
+      const result = await cloudinary.uploader.upload(req.body.fotoKTP);
+      updatedData.fotoKTP = result.secure_url;
+    }    
+    
 		const user = await User.findByIdAndUpdate(req.user._id, { $set: updatedData }, { new: true }).select(
 			"-password"
 		);

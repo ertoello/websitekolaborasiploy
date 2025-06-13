@@ -143,6 +143,7 @@ export const countUnreadPostNotificationsByCategory = async (req, res) => {
       all: unreadNotifications.length,
       penting: 0,
       kolaborasi: 0,
+      keuangan: 0, // ✅ Tambahkan kategori keuangan
     };
 
     unreadNotifications.forEach((notif) => {
@@ -150,6 +151,7 @@ export const countUnreadPostNotificationsByCategory = async (req, res) => {
 
       if (category === "penting") counts.penting += 1;
       else if (category === "kolaborasi") counts.kolaborasi += 1;
+      else if (category === "keuangan") counts.keuangan += 1; // ✅ Hitung keuangan
     });
 
     res.status(200).json(counts);

@@ -16,6 +16,27 @@ const ProfilePage = () => {
   const { username } = useParams();
   const queryClient = useQueryClient();
   const [activeSection, setActiveSection] = useState(null);
+  const [fotoKTPPreview, setFotoKTPPreview] = useState("");
+  const [fotoKTPBase64, setFotoKTPBase64] = useState("");
+
+  const handleKTPUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setFotoKTPBase64(reader.result);
+      setFotoKTPPreview(reader.result);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleSubmitKTP = () => {
+    if (!fotoKTPBase64)
+      return toast.error("Silakan pilih gambar terlebih dahulu");
+
+    updateProfile({ fotoKTP: fotoKTPBase64 });
+  };
 
   // Get authenticated user
   const {
@@ -138,6 +159,41 @@ const ProfilePage = () => {
         {/* Main Content (About + Posts) */}
         <div className="col-span-12 md:col-span-8 p-0 md:p-2 space-y-6">
           {/* About Section di tengah */}
+          {isOwnProfile && (
+            <div className="bg-white p-4 rounded shadow">
+              {fotoKTPPreview && (
+                <img
+                  src={fotoKTPPreview}
+                  alt="Preview KTP"
+                  className="w-64 h-auto mb-4 rounded border"
+                />
+              )}
+              <h3 className="text-lg font-semibold mb-2">Upload Foto KTP</h3>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleKTPUpload}
+                className="mb-2"
+              />
+              <button
+                onClick={handleSubmitKTP}
+                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+              >
+                Simpan Foto KTP
+              </button>
+            </div>
+          )}
+          {displayedUser.fotoKTP && !fotoKTPPreview && (
+            <div className="mt-4">
+              <h4 className="text-sm font-medium mb-1">Foto KTP Tersimpan:</h4>
+              <img
+                src={displayedUser.fotoKTP}
+                alt="Foto KTP"
+                className="w-64 h-auto rounded border"
+              />
+            </div>
+          )}
+
           <AboutSection
             userData={displayedUser}
             isOwnProfile={isOwnProfile}

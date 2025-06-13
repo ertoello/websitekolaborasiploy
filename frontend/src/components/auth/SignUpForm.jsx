@@ -67,6 +67,9 @@ const SignUpForm = () => {
   const [modalMessage, setModalMessage] = useState("");
   const [modalTitle, setModalTitle] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [ktpFileBase64, setKtpFileBase64] = useState("");
+  const [ktpPreview, setKtpPreview] = useState("");
+
 
   const showModal = (title, message) => {
     setModalTitle(title);
@@ -96,6 +99,18 @@ const SignUpForm = () => {
     },
   });
 
+  const handleKtpChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setKtpFileBase64(reader.result);
+      setKtpPreview(reader.result);
+    };
+    reader.readAsDataURL(file);
+  };  
+
   const handleSignUp = (e) => {
     e.preventDefault();
     if (password.length < 6) {
@@ -105,7 +120,14 @@ const SignUpForm = () => {
 
     setError(null); // clear error jika valid
     try {
-      signUpMutation({ name, username, email, password, nik });
+      signUpMutation({
+        name,
+        username,
+        email,
+        password,
+        nik,
+        fotoKTP: ktpFileBase64,
+      });
       // navigate("/verify-email");
     } catch (error) {
       console.log(error);
@@ -132,6 +154,30 @@ const SignUpForm = () => {
         onChange={(e) => setNik(e.target.value)}
         required
       />
+
+      <div className="flex flex-col gap-1">
+        <label className="text-sm font-semibold text-gray-700">
+          Upload Foto KTP
+        </label>
+        {ktpPreview && (
+          <img
+            src={ktpPreview}
+            alt="Preview KTP"
+            className="w-64 h-auto mb-2 rounded border"
+          />
+        )}
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleKtpChange}
+          required
+          className="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4
+      file:rounded-full file:border-0
+      file:text-sm file:font-semibold
+      file:bg-blue-50 file:text-blue-700
+      hover:file:bg-blue-100"
+        />
+      </div>
 
       <LabeledInput
         label="Username"

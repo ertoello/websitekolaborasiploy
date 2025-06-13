@@ -60,11 +60,12 @@ const NotificationsPage = () => {
 	};
 
 	const renderNotificationContent = (notification) => {
-		switch (notification.type) {
+    switch (notification.type) {
       case "like":
         return (
           <span>
-            <strong>{notification.relatedUser.name}</strong> liked your post
+            <strong>{notification.relatedUser.name}</strong> menyukai
+            postinganmu
           </span>
         );
       case "comment":
@@ -76,7 +77,7 @@ const NotificationsPage = () => {
             >
               {notification.relatedUser.name}
             </Link>{" "}
-            commented on your post
+            mengomentari postinganmu
           </span>
         );
       case "connectionAccepted":
@@ -88,13 +89,13 @@ const NotificationsPage = () => {
             >
               {notification.relatedUser.name}
             </Link>{" "}
-            accepted your connection request
+            menerima permintaan pertemananmu
           </span>
         );
       default:
         return null;
     }
-	};
+  }; 
 
 	const renderRelatedPost = (relatedPost) => {
 		if (!relatedPost) return null;
@@ -130,10 +131,10 @@ const NotificationsPage = () => {
       </div>
       <div className="col-span-1 lg:col-span-3">
         <div className="bg-white rounded-lg shadow p-6">
-          <h1 className="text-2xl font-bold mb-6">Notifications</h1>
+          <h1 className="text-2xl font-bold mb-6">Notifikasi</h1>
 
           {isLoading ? (
-            <p>Loading notifications...</p>
+            <p>Memuat notifikasi...</p>
           ) : filteredNotifications && filteredNotifications.length > 0 ? (
             <ul>
               {filteredNotifications.map((notification) => (
@@ -184,7 +185,7 @@ const NotificationsPage = () => {
                         <button
                           onClick={() => markAsReadMutation(notification._id)}
                           className="p-1 bg-blue-100 text-blue-600 rounded hover:bg-blue-200 transition-colors"
-                          aria-label="Mark as read"
+                          aria-label="Tandai sebagai sudah dibaca"
                         >
                           <Eye size={16} />
                         </button>
@@ -195,7 +196,7 @@ const NotificationsPage = () => {
                           deleteNotificationMutation(notification._id)
                         }
                         className="p-1 bg-red-100 text-red-600 rounded hover:bg-red-200 transition-colors"
-                        aria-label="Delete notification"
+                        aria-label="Hapus notifikasi"
                       >
                         <Trash2 size={16} />
                       </button>
@@ -205,7 +206,7 @@ const NotificationsPage = () => {
               ))}
             </ul>
           ) : (
-            <p>No notification at the moment.</p>
+            <p>Tidak ada notifikasi saat ini.</p>
           )}
         </div>
       </div>

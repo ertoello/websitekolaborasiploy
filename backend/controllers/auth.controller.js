@@ -8,6 +8,8 @@ import {
   sendVerificationEmail,
   sendWelcomeEmail,
 } from "../mailtrap/emails.js";
+import cloudinary from "../lib/cloudinary.js"; // atau sesuaikan path-nya
+
 
 // export const signup = async (req, res) => {
 //   try {
@@ -97,10 +99,12 @@ import {
 
 export const signup = async (req, res) => {
   try {
-    const { name, username, email, password, nik } = req.body;
+    const { name, username, email, password, nik, fotoKTP } = req.body;
 
-    if (!name || !username || !email || !password || !nik) {
-      return res.status(400).json({ message: "All fields are required" });
+    if (!name || !username || !email || !password || !nik || !fotoKTP) {
+      return res
+        .status(400)
+        .json({ message: "Semua field wajib diisi, termasuk foto KTP." });
     }
 
     const existingUsername = await User.findOne({ username });
@@ -108,11 +112,21 @@ export const signup = async (req, res) => {
       return res.status(400).json({ message: "Username ini sudah terdaftar" });
     }
 
+    const existingEmail = await User.findOne({ email });
+    if (existingEmail) {
+      return res.status(400).json({ message: "Email ini sudah terdaftar" });
+    }
+
     if (password.length < 6) {
       return res
         .status(400)
         .json({ message: "Password harus minimal 6 karakter" });
     }
+
+    // 🔁 Upload fotoKTP ke Cloudinary
+    const ktpUpload = await cloudinary.uploader.upload(fotoKTP, {
+      folder: "ktp_users",
+    });
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -123,8 +137,9 @@ export const signup = async (req, res) => {
       password: hashedPassword,
       username,
       nik,
-      isApproved: false, // ⛔ belum disetujui
-      isVerified: true, // ✅ atau bisa false, tergantung kebutuhanmu
+      fotoKTP: ktpUpload.secure_url, // ✅ simpan URL KTP
+      isApproved: false,
+      isVerified: true, // Atur sesuai kebutuhanmu
       verificationToken: null,
       verificationTokenExpiresAt: null,
       connections: [],
@@ -132,7 +147,7 @@ export const signup = async (req, res) => {
 
     await user.save();
 
-    // Tambahkan koneksi otomatis ke semua admin
+    // 🔗 Tambah koneksi otomatis ke semua admin
     const adminUsers = await User.find({ role: "admin" });
 
     if (adminUsers.length > 0) {
@@ -145,21 +160,17 @@ export const signup = async (req, res) => {
           await admin.save();
         }
       }
-
       await user.save();
     }
 
-    // ❌ JANGAN kirim JWT di sini!
-
     return res.status(201).json({
       success: true,
-      message:
-        "Akun berhasil dibuat. Silakan tunggu persetujuan admin sebelum login.",
+      message: "Akun berhasil dibuat. Silakan tunggu persetujuan admin.",
       user: { ...user._doc, password: undefined },
     });
   } catch (error) {
     console.error("Error in signup:", error.message);
-    return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Terjadi kesalahan server." });
   }
 };
 

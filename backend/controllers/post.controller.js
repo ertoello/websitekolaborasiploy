@@ -56,7 +56,7 @@ export const createPost = async (req, res) => {
     await newPost.save();
 
     // Kirim notifikasi ke semua user untuk kategori penting / kolaborasi
-    if (["penting", "kolaborasi"].includes(category)) {
+    if (["penting", "kolaborasi", "keuangan"].includes(category)) {
       await createPostNotificationForAllUsers(newPost, category);
     }
 

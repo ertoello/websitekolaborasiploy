@@ -160,7 +160,7 @@ export const getConnectionRequests = async (req, res) => {
       .sort({ createdAt: -1 }) // ← Tambahkan sorting agar urut dari yang terbaru
       .populate(
         "sender",
-        "name username profilePicture headline connections role"
+        "name username profilePicture headline connections role "
       );
 
     res.json(requests);
