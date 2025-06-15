@@ -184,13 +184,15 @@ const ProfilePage = () => {
             </div>
           )}
           {displayedUser.fotoKTP && !fotoKTPPreview && (
-            <div className="mt-4">
+            <div className="mt-4 text-center bg-white p-1 md:p-3">
               <h4 className="text-sm font-medium mb-1">Foto KTP Tersimpan:</h4>
-              <img
-                src={displayedUser.fotoKTP}
-                alt="Foto KTP"
-                className="w-64 h-auto rounded border"
-              />
+              <div className="flex justify-center">
+                <img
+                  src={displayedUser.fotoKTP}
+                  alt="Foto KTP"
+                  className="w-64 h-auto rounded border"
+                />
+              </div>
             </div>
           )}
 

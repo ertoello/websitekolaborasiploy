@@ -11,7 +11,7 @@ const DashboardAdmin = () => {
   const [confirmUserId, setConfirmUserId] = useState(null);
   const [activeTab, setActiveTab] = useState("daftar");
   const [subTab, setSubTab] = useState("verified");
-  const [subTabManajemen, setSubTabManajemen] = useState("verified");
+  const [subTabManajemen, setSubTabManajemen] = useState("unverified");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const { data: users, isLoading } = useQuery({
@@ -61,7 +61,7 @@ const DashboardAdmin = () => {
   if (isLoading) return <p>Loading...</p>;
 
   const TidakAdaData = ({ pesan }) => (
-    <p className="text-center text-gray-500 font-semibold py-10">{pesan}</p>
+    <p className="text-center text-gray-500 font-semibold text-xl py-10">{pesan}</p>
   );
 
   const renderUserCard = (user) => (
@@ -144,7 +144,7 @@ const DashboardAdmin = () => {
                   : "bg-white text-gray-800"
               }`}
             >
-              Daftar User
+              Daftar Warga Desa
             </button>
           </li>
           <li>
@@ -156,7 +156,7 @@ const DashboardAdmin = () => {
                   : "bg-white text-gray-800"
               }`}
             >
-              Manajemen User
+              Manajemen Warga Desa
             </button>
           </li>
           <li>
@@ -168,10 +168,9 @@ const DashboardAdmin = () => {
                   : "bg-white text-gray-800"
               }`}
             >
-              Manajemen Admin
+              Manajemen Pemerintah Desa
             </button>
           </li>
-
           <li>
             <button
               onClick={() => setActiveTab("dokumen")}
@@ -222,7 +221,7 @@ const DashboardAdmin = () => {
                       : "bg-white text-gray-800"
                   }`}
                 >
-                  Daftar User
+                  Daftar Warga Desa
                 </button>
               </li>
               <li>
@@ -237,7 +236,7 @@ const DashboardAdmin = () => {
                       : "bg-white text-gray-800"
                   }`}
                 >
-                  Manajemen User
+                  Manajemen Warga Desa
                 </button>
               </li>
               <li>
@@ -249,7 +248,7 @@ const DashboardAdmin = () => {
                       : "bg-white text-gray-800"
                   }`}
                 >
-                  Manajemen Admin
+                  Manajemen Pemerintah Desa
                 </button>
               </li>
 
@@ -294,36 +293,36 @@ const DashboardAdmin = () => {
                     : "bg-gray-200"
                 }`}
               >
-                Terverifikasi
+                Semua Warga Desa
               </button>
               <button
                 onClick={() => setSubTab("unverified")}
                 className={`px-4 py-2 rounded ${
                   subTab === "unverified"
-                    ? "bg-red-600 text-white"
+                    ? "bg-[#3FA3CE] text-white"
                     : "bg-gray-200"
                 }`}
               >
-                Belum Terverifikasi
+                Belum Verifikasi
               </button>
             </div>
 
             {subTab === "verified" ? (
               <>
                 <h3 className="text-lg font-semibold text-green-600 mb-2 text-center">
-                  Pengguna Terverifikasi
+                  Daftar Warga Desa Beopoeng
                 </h3>
                 {users?.data?.filter(
                   (user) => user.role === "user" && user.isApproved
                 ).length === 0 ? (
-                  <TidakAdaData pesan="Tidak ada pengguna terverifikasi." />
+                  <TidakAdaData pesan="Tidak ada pengguna" />
                 ) : (
                   <div className="overflow-x-auto bg-white shadow-md rounded-lg mb-8">
                     <table className="min-w-full divide-y divide-gray-200 text-sm">
                       <thead className="bg-green-100">
                         <tr>
                           <th className="px-4 py-2 text-left font-semibold text-gray-700">
-                            Foto
+                            No
                           </th>
                           <th className="px-4 py-2 text-left font-semibold text-gray-700">
                             Nama
@@ -344,15 +343,9 @@ const DashboardAdmin = () => {
                           .filter(
                             (user) => user.role === "user" && user.isApproved
                           )
-                          .map((user) => (
+                          .map((user, index) => (
                             <tr key={user._id}>
-                              <td className="px-4 py-2">
-                                <img
-                                  src={user.profilePicture || "/avatar.png"}
-                                  alt="Profile"
-                                  className="w-10 h-10 rounded-full"
-                                />
-                              </td>
+                              <td className="px-4 py-2">{index + 1}</td>
                               <td className="px-4 py-2">{user.name}</td>
                               <td className="px-4 py-2">{user.username}</td>
                               <td className="px-4 py-2">{user.email}</td>
@@ -370,20 +363,20 @@ const DashboardAdmin = () => {
               </>
             ) : (
               <>
-                <h3 className="text-lg font-semibold text-red-600 mb-2 text-center">
-                  Pengguna Belum Terverifikasi
+                <h3 className="text-lg font-semibold text-[#3FA3CE] mb-2 text-center">
+                  Warga Yang Belum Verifikasi Akun
                 </h3>
                 {users?.data?.filter(
                   (user) => user.role === "user" && !user.isApproved
                 ).length === 0 ? (
-                  <TidakAdaData pesan="Tidak ada pengguna belum terverifikasi." />
+                  <TidakAdaData pesan="Tidak ada pengguna" />
                 ) : (
                   <div className="overflow-x-auto bg-white shadow-md rounded-lg">
                     <table className="min-w-full divide-y divide-gray-200 text-sm">
                       <thead className="bg-red-100">
                         <tr>
                           <th className="px-4 py-2 text-left font-semibold text-gray-700">
-                            Foto
+                            No
                           </th>
                           <th className="px-4 py-2 text-left font-semibold text-gray-700">
                             Nama
@@ -404,15 +397,9 @@ const DashboardAdmin = () => {
                           .filter(
                             (user) => user.role === "user" && !user.isApproved
                           )
-                          .map((user) => (
+                          .map((user, index) => (
                             <tr key={user._id}>
-                              <td className="px-4 py-2">
-                                <img
-                                  src={user.profilePicture || "/avatar.png"}
-                                  alt="Profile"
-                                  className="w-10 h-10 rounded-full"
-                                />
-                              </td>
+                              <td className="px-4 py-2">{index + 1}</td>
                               <td className="px-4 py-2">{user.name}</td>
                               <td className="px-4 py-2">{user.username}</td>
                               <td className="px-4 py-2">{user.email}</td>
@@ -435,24 +422,54 @@ const DashboardAdmin = () => {
         {activeTab === "dokumen" && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {users?.data?.length === 0 ? (
-              <TidakAdaData pesan="Tidak ada pengguna." />
+              <TidakAdaData pesan="Tidak ada pengguna" />
             ) : (
               users.data.map((user) => (
-                <div key={user._id} className="bg-white shadow rounded-lg p-4">
-                  <h3 className="text-lg font-bold text-center mb-2">
-                    {user.name}
-                  </h3>
+                <div
+                  key={user._id}
+                  className="bg-white shadow rounded-lg p-4 flex flex-col items-center text-center"
+                >
+                  <h3 className="text-lg font-bold mb-1">{user.name}</h3>
+
+                  {/* Status Verifikasi */}
+                  <span
+                    className={`px-2 py-1 text-xs font-semibold rounded-full mb-2 ${
+                      user.isApproved
+                        ? "bg-green-100 text-green-700"
+                        : "bg-red-100 text-red-700"
+                    }`}
+                  >
+                    {user.isApproved ? "Terverifikasi" : "Belum Terverifikasi"}
+                  </span>
+
+                  {/* Gambar KTP */}
                   {user.fotoKTP ? (
                     <img
                       src={user.fotoKTP}
                       alt="KTP"
-                      className="w-full h-auto object-contain rounded"
+                      className="w-full h-auto object-contain rounded mb-2"
                     />
                   ) : (
-                    <p className="text-center text-gray-500">
-                      Belum upload KTP
-                    </p>
+                    <p className="text-gray-500 mb-2">Belum upload KTP</p>
                   )}
+
+                  {/* Tombol Aksi */}
+                  <div className="flex gap-2 mt-2">
+                    {!user.isApproved && (
+                      <button
+                        onClick={() => setConfirmUserId(user._id)}
+                        className="px-3 py-1 text-sm bg-green-500 hover:bg-green-600 text-white rounded"
+                      >
+                        Konfirmasi Akun
+                      </button>
+                    )}
+                    <button
+                      onClick={() => setDeleteUserId(user._id)}
+                      className="px-3 py-1 text-sm bg-[#3FA3CE] hover:bg-[#255f79] text-white rounded"
+                    >
+                      Hapus Akun
+                    </button>
+                  </div>
                 </div>
               ))
             )}
@@ -478,7 +495,7 @@ const DashboardAdmin = () => {
                   onClick={() => setSubTabManajemen("unverified")}
                   className={`px-4 py-2 rounded ${
                     subTabManajemen === "unverified"
-                      ? "bg-red-600 text-white"
+                      ? "bg-[#3FA3CE] text-white"
                       : "bg-gray-200"
                   }`}
                 >
