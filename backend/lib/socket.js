@@ -9,7 +9,8 @@ const io = new Server(server, {
   cors: {
     origin: [
       // "https://websitekolaborasiploy-production.up.railway.app",
-      "https://websitekolaborasiploy.vercel.app",
+      // "https://websitekolaborasiploy.vercel.app",
+      "http://localhost:5173",
     ],
     credentials: true,
   },
